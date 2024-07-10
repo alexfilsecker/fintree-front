@@ -1,4 +1,3 @@
-import Button from "@mui/material/Button";
 import Login from "@/components/login";
 
 const Home = () => {

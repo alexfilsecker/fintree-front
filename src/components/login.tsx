@@ -1,10 +1,12 @@
-import { Box } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 
 const Login = () => {
   return (
-    <Box>
-      <h1>Login</h1>
-    </Box>
+    <Paper>
+      <Box p={2}>
+        <h1>Login</h1>
+      </Box>
+    </Paper>
   );
 };
 
