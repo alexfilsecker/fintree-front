@@ -1,14 +1,25 @@
-import { Paper, Typography, Button, TextField } from "@mui/material";
+import {
+  Paper,
+  Typography,
+  Button,
+  TextField,
+  CircularProgress,
+} from "@mui/material";
 import { useState } from "react";
 
 import PasswordInput from "./password";
 
-import { useAppDispatch } from "@/hooks/state";
+import { useAppDispatch, useAppSelector } from "@/hooks/state";
 import login from "@/redux/slices/auth/authActions";
 
 const Login = (): JSX.Element => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const { loginError, loginLoading } = useAppSelector((state) => state.auth);
+
+  const errorInPassword = loginError !== null && loginError.in === "password";
+  const errorInUsername = loginError !== null && loginError.in === "username";
 
   const dispatch = useAppDispatch();
 
@@ -29,12 +40,28 @@ const Login = (): JSX.Element => {
             onChange={(e) => {
               setUsername(e.target.value);
             }}
+            error={errorInUsername}
+            helperText={errorInUsername ? loginError.message : undefined}
           />
-          <PasswordInput password={password} setPassword={setPassword} />
+          <PasswordInput
+            password={password}
+            setPassword={setPassword}
+            error={errorInPassword ? loginError.message : null}
+          />
         </div>
-        <Button variant="outlined" onClick={handleLogin}>
-          Login
-        </Button>
+        {loginLoading ? (
+          <div className="w-full flex justify-center">
+            <CircularProgress />
+          </div>
+        ) : (
+          <Button
+            variant="outlined"
+            onClick={handleLogin}
+            disabled={password.length === 0 || username.length === 0}
+          >
+            Login
+          </Button>
+        )}
       </div>
     </Paper>
   );

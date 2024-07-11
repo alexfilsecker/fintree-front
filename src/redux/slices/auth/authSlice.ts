@@ -13,7 +13,7 @@ type AuthState = {
   loginLoading: boolean;
   loginSuccess: boolean;
   loginError: null | {
-    in: "rut" | "password";
+    in: "username" | "password";
     message: string;
   };
   refreshLoading: boolean;
@@ -47,6 +47,18 @@ const authSlice = createSlice({
     });
     builder.addCase(login.rejected, (state, action) => {
       state.loginLoading = false;
+      state.loginSuccess = false;
+      const payload = action.payload;
+      if (payload === undefined) {
+        console.error("login.rejected: payload is undefined");
+        return;
+      }
+      if (payload.type === "LoginError") {
+        state.loginError = {
+          in: payload.errorIn,
+          message: payload.message,
+        };
+      }
     });
   },
 });

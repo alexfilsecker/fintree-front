@@ -1,15 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AxiosError } from "axios";
 
 import { getRefreshToken, getToken, isTokenExpired } from "../utils/auth";
 
 import { post, requestNewToken } from "./api";
+import handleGeneralActionError from "./handleGeneralActionError";
 
 import type { KnownError } from "./knownError";
 import type { AsyncThunk } from "@reduxjs/toolkit";
 
 type Options = {
   withToken: boolean;
+};
+
+type AxiosReturnType<T> = {
+  status: number;
+  responseData: T;
 };
 
 const defaultOptions: Options = {
@@ -40,35 +45,20 @@ const generateRequest = <RT = unknown, A = void>(
       }
       try {
         switch (method) {
-          case "post":
-            return (await post<A, RT>(path, params, options.withToken)).data;
+          case "post": {
+            const response = await post<A, AxiosReturnType<RT>>(
+              path,
+              params,
+              options.withToken
+            );
+
+            return response.data.responseData;
+          }
           default:
             return null as RT;
         }
       } catch (error: unknown) {
-        const returnError: KnownError = {
-          type: "Unknown",
-          message: "Unknown error",
-          stack: "No Stack",
-          status: 500,
-        };
-
-        if (error instanceof Error) {
-          returnError.type = "Error";
-          returnError.message = error.message;
-          returnError.stack = error.stack;
-          if (error instanceof AxiosError) {
-            if (
-              error.response?.data.error !== undefined &&
-              error.response.data.error !== null
-            ) {
-              const recievedError = error.response.data.error;
-              returnError.message = recievedError.message;
-              returnError.status = error.response.status;
-              returnError.stack = recievedError.stack;
-            }
-          }
-        }
+        const returnError = handleGeneralActionError(error);
         return thunkApi.rejectWithValue(returnError);
       }
     }

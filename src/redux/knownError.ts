@@ -1,6 +1,4 @@
-type ValidationError = object;
-
-export type CertainErrorTypes = "Unknown" | "Error";
+import type { ZodIssue } from "zod";
 
 type NormalError = {
   status: number;
@@ -8,13 +6,26 @@ type NormalError = {
   stack?: string;
 };
 
-export type CertainError = NormalError & {
-  type: CertainErrorTypes;
+type CUnknownError = NormalError & {
+  type: "Unknown";
+};
+
+type CError = NormalError & {
+  type: "Error";
 };
 
 type CValidationError = NormalError & {
   type: "ValidationError";
-  validationErrors: ValidationError[];
+  validationErrors: ZodIssue[];
 };
 
-export type KnownError = CertainError | CValidationError;
+type CLoginError = NormalError & {
+  type: "LoginError";
+  errorIn: "username" | "password";
+};
+
+export type KnownError =
+  | CUnknownError
+  | CError
+  | CValidationError
+  | CLoginError;
