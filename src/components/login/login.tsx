@@ -3,9 +3,18 @@ import { useState } from "react";
 
 import PasswordInput from "./password";
 
+import { useAppDispatch } from "@/hooks/state";
+import login from "@/redux/slices/auth/authActions";
+
 const Login = (): JSX.Element => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const dispatch = useAppDispatch();
+
+  const handleLogin = (): void => {
+    void dispatch(login({ username, password }));
+  };
 
   return (
     <Paper className="p-10" elevation={10}>
@@ -23,7 +32,9 @@ const Login = (): JSX.Element => {
           />
           <PasswordInput password={password} setPassword={setPassword} />
         </div>
-        <Button variant="outlined">Login</Button>
+        <Button variant="outlined" onClick={handleLogin}>
+          Login
+        </Button>
       </div>
     </Paper>
   );
