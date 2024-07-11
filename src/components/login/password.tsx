@@ -13,16 +13,23 @@ type PasswordInputProps = {
   setPassword: (_: string) => void;
 };
 
-const PasswordInput = ({ password, setPassword }: PasswordInputProps) => {
+const PasswordInput = ({
+  password,
+  setPassword,
+}: PasswordInputProps): JSX.Element => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowPassword = (): void => {
+    setShowPassword((show) => !show);
+  };
   return (
     <FormControl variant="outlined">
       <InputLabel htmlFor="password-input">Password</InputLabel>
       <OutlinedInput
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={(e) => {
+          setPassword(e.target.value);
+        }}
         label="Password"
         id="password-input"
         type={showPassword ? "text" : "password"}

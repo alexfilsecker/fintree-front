@@ -1,11 +1,11 @@
 import { ThemeProvider } from "@mui/material";
-import { AppProps } from "next/app";
+import { type AppProps } from "next/app";
 
 import Layout from "@/components/layout";
 import theme from "@/style/theme";
 import "../style/global.css";
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
   return (
     <ThemeProvider theme={theme}>
       <Layout>

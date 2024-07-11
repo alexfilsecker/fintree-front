@@ -1,6 +1,6 @@
 import Login from "@/components/login/login";
 
-const Home = () => {
+const Home = (): JSX.Element => {
   return (
     <div>
       <Login />

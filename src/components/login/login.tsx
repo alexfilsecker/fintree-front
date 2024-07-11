@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import PasswordInput from "./password";
 
-const Login = () => {
+const Login = (): JSX.Element => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,7 +17,9 @@ const Login = () => {
           <TextField
             label="Username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
           />
           <PasswordInput password={password} setPassword={setPassword} />
         </div>
