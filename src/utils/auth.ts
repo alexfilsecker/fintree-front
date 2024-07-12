@@ -42,5 +42,6 @@ export const isTokenExpired = (token: string): boolean => {
   }
   const tokenExpired = Date.now() >= exp * 1000;
   // const timeTillExpireInSeconds = (exp * 1000 - Date.now()) / 1000;
+  // console.log("timeTillExpireInSeconds", timeTillExpireInSeconds);
   return tokenExpired;
 };

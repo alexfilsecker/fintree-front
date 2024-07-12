@@ -1,4 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
+import Router from "next/router";
 
 import { getRefreshToken, getToken, isTokenExpired } from "../utils/auth";
 
@@ -31,16 +33,24 @@ const generateRequest = <RT = unknown, A = void>(
     typePrefix,
     async (params: A, thunkApi) => {
       if (options.withToken) {
-        const token = getToken();
-        if (token === undefined) {
-          throw new Error("Token is undefined");
-        }
-        if (isTokenExpired(token)) {
-          const refreshToken = getRefreshToken();
-          if (refreshToken === undefined) {
-            throw new Error("Refresh token is undefined");
+        try {
+          const token = getToken();
+          if (token === undefined) {
+            throw new Error("Token is undefined");
           }
-          await requestNewToken(refreshToken);
+          if (isTokenExpired(token)) {
+            const refreshToken = getRefreshToken();
+            if (refreshToken === undefined) {
+              throw new Error("Refresh token is undefined");
+            }
+            await requestNewToken(refreshToken);
+          }
+        } catch (error: unknown) {
+          Cookies.remove("token");
+          Cookies.remove("refreshToken");
+          // await Router.push("/");
+          // window.location.reload();
+          return thunkApi.rejectWithValue(handleGeneralActionError(error));
         }
       }
       try {

@@ -1,6 +1,8 @@
 import axios, { type AxiosResponse } from "axios";
 import Cookies from "js-cookie";
 
+import { saveRefreshToken, saveToken } from "@/utils/auth";
+
 const baseURL = "http://localhost:3030";
 
 export const post = async <A, RT>(
@@ -24,17 +26,24 @@ export const post = async <A, RT>(
 };
 
 type NewTokenPayload = {
-  newToken: string;
-  newRefreshToken: string;
+  status: number;
+  responseData: {
+    newToken: string;
+    newRefreshToken: string;
+  };
 };
 
 export const requestNewToken = async (refreshToken: string): Promise<void> => {
   const body = {
     refreshToken,
   };
+
   const url = `${baseURL}/auth/refresh`;
   const response = await axios.post<NewTokenPayload>(url, body);
+  if (response === undefined) {
+    throw new Error("Token refresh failed");
+  }
   const { data } = response;
-  Cookies.set("token", data.newToken);
-  Cookies.set("refreshToken", data.newRefreshToken);
+  saveToken(data.responseData.newToken);
+  saveRefreshToken(data.responseData.newRefreshToken);
 };

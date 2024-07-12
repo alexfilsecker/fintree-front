@@ -55,7 +55,7 @@ const Login = (): JSX.Element => {
           </div>
         ) : (
           <Button
-            variant="outlined"
+            variant="contained"
             onClick={handleLogin}
             disabled={password.length === 0 || username.length === 0}
           >

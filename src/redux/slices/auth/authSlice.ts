@@ -21,7 +21,7 @@ type AuthState = {
 };
 
 const initialState: AuthState = {
-  userInfo: null,
+  userInfo: getUserInfo(),
   loginLoading: false,
   loginSuccess: false,
   loginError: null,
