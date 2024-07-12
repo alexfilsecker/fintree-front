@@ -48,8 +48,9 @@ const generateRequest = <RT = unknown, A = void>(
         } catch (error: unknown) {
           Cookies.remove("token");
           Cookies.remove("refreshToken");
-          // await Router.push("/");
-          // window.location.reload();
+          void Router.push("/").then(async () => {
+            window.location.reload();
+          });
           return thunkApi.rejectWithValue(handleGeneralActionError(error));
         }
       }
