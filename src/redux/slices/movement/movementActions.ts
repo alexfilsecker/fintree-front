@@ -1,5 +1,19 @@
+import { type Movement } from "./movementSlice";
+
 import generateRequest from "@/redux/generalActions";
 
-const requestScrap = generateRequest("post", "movements/scrap");
+export const requestScrap = generateRequest("post", "movements/scrap");
 
-export default requestScrap;
+type MovementResponseString = Movement & {
+  date: string;
+  valueDate: string;
+};
+
+type MovementsResponse = {
+  movements: MovementResponseString[];
+};
+
+export const requestMovements = generateRequest<MovementsResponse>(
+  "get",
+  "movements"
+);

@@ -4,7 +4,7 @@ import Router from "next/router";
 
 import { getRefreshToken, getToken, isTokenExpired } from "../utils/auth";
 
-import { post, requestNewToken } from "./api";
+import { get, post, requestNewToken } from "./api";
 import handleGeneralActionError from "./handleGeneralActionError";
 
 import type { KnownError } from "./knownError";
@@ -58,6 +58,16 @@ const generateRequest = <RT = unknown, A = void>(
         switch (method) {
           case "post": {
             const response = await post<A, AxiosReturnType<RT>>(
+              path,
+              params,
+              options.withToken
+            );
+
+            return response.data.responseData;
+          }
+
+          case "get": {
+            const response = await get<A, AxiosReturnType<RT>>(
               path,
               params,
               options.withToken

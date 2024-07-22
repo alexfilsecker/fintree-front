@@ -1,9 +1,11 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
 import authReducer from "./slices/auth/authSlice";
+import movementsReducer from "./slices/movement/movementSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  movements: movementsReducer,
 });
 
 const store = configureStore({

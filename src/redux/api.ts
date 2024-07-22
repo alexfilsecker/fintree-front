@@ -25,6 +25,24 @@ export const post = async <A, RT>(
   });
 };
 
+export const get = async <A, RT>(
+  path: string,
+  params: A,
+  withToken = true
+): Promise<AxiosResponse<RT, any>> => {
+  let token: string | undefined;
+  if (withToken) {
+    token = Cookies.get("token");
+  }
+  const url = `${baseURL}/${path}`;
+  return await axios.get<RT>(url, {
+    params,
+    headers: {
+      Authorization: withToken ? `Bearer ${token}` : undefined,
+    },
+  });
+};
+
 type NewTokenPayload = {
   status: number;
   responseData: {
