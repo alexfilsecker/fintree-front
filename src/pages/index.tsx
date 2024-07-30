@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-import Login from "@/components/login/login";
+import Login from "@/components/login/Login";
 import { useAppSelector } from "@/hooks/state";
 
 const Index = (): JSX.Element => {

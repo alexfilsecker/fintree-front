@@ -2,11 +2,11 @@ import { ThemeProvider } from "@mui/material";
 import { type AppProps } from "next/app";
 import { Provider } from "react-redux";
 
-import Layout from "@/components/layout";
+import store from "../redux/store";
+
+import Layout from "@/components/Layout";
 import theme from "@/style/theme";
 import "../style/global.css";
-
-import store from "../redux/store";
 
 const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
   return (

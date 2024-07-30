@@ -51,7 +51,7 @@ const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
           <Typography
             className={`${amount > 0 ? "bg-green-200" : "bg-red-200"} p-1 rounded-md`}
           >
-            {sign} {absouluteAmount} {currency}
+            {sign} ${absouluteAmount} {currency}
           </Typography>
         </div>
       </div>

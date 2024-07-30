@@ -1,6 +1,6 @@
 import { Paper } from "@mui/material";
 
-import MovementElement from "./movementElement";
+import MovementElement from "./MovementElement";
 
 import { useAppSelector } from "@/hooks/state";
 

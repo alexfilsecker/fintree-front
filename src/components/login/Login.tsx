@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-import PasswordInput from "./password";
+import PasswordInput from "./Password";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/state";
 import login from "@/redux/slices/auth/authActions";
