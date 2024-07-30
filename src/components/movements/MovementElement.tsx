@@ -1,6 +1,8 @@
 import EditIcon from "@mui/icons-material/Edit";
 import { IconButton, Paper, Typography } from "@mui/material";
 
+import DateSeciton from "./DateSection";
+
 import { type Movement } from "@/redux/slices/movement/movementSlice";
 
 type MovementElementProps = {
@@ -21,9 +23,6 @@ const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
   const absouluteAmount = Math.abs(amount);
   const sign = amount < 0 ? "-" : "+";
 
-  const formatedDate = date.format("ddd D MMM");
-  const formatedValueDate = valueDate.format("ddd D MMM");
-
   return (
     <Paper className="flex flex-col gap-2 p-3" elevation={1}>
       <div className="flex justify-between align-middle">
@@ -33,18 +32,9 @@ const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
           <EditIcon />
         </IconButton>
       </div>
-      <div className="flex gap-2">
-        <div className="flex flex-col w-1/5">
-          {formatedDate === formatedValueDate ? (
-            <div>{formatedValueDate}</div>
-          ) : (
-            <div>
-              <div>{formatedDate}</div>
-              <div>{formatedValueDate}</div>
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col w-3/5">
+      <div className="flex gap-2 justify-between">
+        <DateSeciton date={date} valueDate={valueDate} />
+        <div className="flex flex-col w-1/2">
           <div>{description}</div>
         </div>
         <div className="w-1/5 flex justify-center self-center">

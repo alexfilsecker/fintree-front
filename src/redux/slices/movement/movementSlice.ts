@@ -48,8 +48,8 @@ const movementsSlice = createSlice({
     builder.addCase(requestMovements.fulfilled, (state, action) => {
       const movements = action.payload.movements.map((movement) => ({
         ...movement,
-        date: moment(movement.date, "DD/MM/2024"),
-        valueDate: moment(movement.valueDate, "DD/MM/2024"),
+        date: moment(movement.date),
+        valueDate: moment(movement.valueDate),
       }));
       state.movements = movements.sort((a, b) => b.valueDate.diff(a.valueDate));
       state.loadingMovements = false;

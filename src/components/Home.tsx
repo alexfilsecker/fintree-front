@@ -28,7 +28,6 @@ const Home = (): JSX.Element => {
   };
 
   const handleMovementsClick = (): void => {
-    console.log("sement");
     void dispatch(requestMovements());
   };
 
