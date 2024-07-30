@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     command: npm run dev
+    restart: always
     ports:
       - 3000:3000
     volumes:
