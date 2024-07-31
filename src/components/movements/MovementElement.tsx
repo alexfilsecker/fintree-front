@@ -1,4 +1,5 @@
 import { Paper, Typography } from "@mui/material";
+import moment from "moment";
 import { useState } from "react";
 
 import DateSeciton from "./DateSection";
@@ -21,12 +22,16 @@ const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
     description,
     userDescription,
     pending,
+    // id,
   } = movement;
 
   const [editing, setEditing] = useState(false);
 
   const absouluteAmount = Math.abs(amount);
   const sign = amount < 0 ? "-" : "+";
+
+  const momentDate = moment(date);
+  const momentValueDate = moment(valueDate);
 
   return (
     <Paper
@@ -43,8 +48,8 @@ const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
       />
       <div className="flex gap-2 justify-between">
         <DateSeciton
-          date={date}
-          valueDate={valueDate}
+          date={momentDate}
+          valueDate={momentValueDate}
           editingDescription={editing}
         />
         <DescriptionSection

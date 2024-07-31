@@ -1,16 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import moment from "moment";
-import { type Moment } from "moment";
 
 import { requestMovements, requestScrap } from "./movementActions";
 
 export type Movement = {
+  id: number;
   institution: string;
   pending: boolean;
   amount: number;
   currency: string;
-  date: Moment;
-  valueDate: Moment;
+  date: string;
+  valueDate: string;
   description: string;
   userDescription: string | null;
 };
@@ -46,13 +46,20 @@ const movementsSlice = createSlice({
       state.loadingMovements = false;
     });
     builder.addCase(requestMovements.fulfilled, (state, action) => {
-      const movements = action.payload.movements.map((movement) => ({
-        ...movement,
-        date: moment(movement.date),
-        valueDate: moment(movement.valueDate),
-      }));
-      state.movements = movements.sort((a, b) => b.valueDate.diff(a.valueDate));
+      // const movements = action.payload.movements.map((movement) => {
+      //   return {
+      //     ...movement,
+      //     date: moment(movement.date),
+      //     valueDate: moment(movement.valueDate),
+      //   };
+      // });
+      const movements = action.payload.movements;
+      console.log("peo");
+      state.movements = movements.sort((a, b) =>
+        moment(b.valueDate).diff(moment(a.valueDate))
+      );
       state.loadingMovements = false;
+      console.log(state.movements[0]);
     });
     builder.addCase(requestScrap.pending, (state) => {
       state.loadingScrap = true;
