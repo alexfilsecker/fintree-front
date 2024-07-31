@@ -12,7 +12,7 @@ export type Movement = {
   date: Moment;
   valueDate: Moment;
   description: string;
-  userDescription: string;
+  userDescription: string | null;
 };
 
 type MovementsState = {

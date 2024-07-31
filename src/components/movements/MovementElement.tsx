@@ -1,7 +1,9 @@
-import EditIcon from "@mui/icons-material/Edit";
-import { IconButton, Paper, Typography } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
+import { useState } from "react";
 
 import DateSeciton from "./DateSection";
+import DescriptionSection from "./DescriptionSection";
+import UpperMovementSection from "./UpperSection";
 
 import { type Movement } from "@/redux/slices/movement/movementSlice";
 
@@ -17,26 +19,40 @@ const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
     date,
     valueDate,
     description,
+    userDescription,
     pending,
   } = movement;
+
+  const [editing, setEditing] = useState(false);
 
   const absouluteAmount = Math.abs(amount);
   const sign = amount < 0 ? "-" : "+";
 
   return (
-    <Paper className="flex flex-col gap-2 p-3" elevation={1}>
-      <div className="flex justify-between align-middle">
-        <Typography className="self-center">{institution}</Typography>
-        {pending && <Typography className="self-center">PENDING</Typography>}
-        <IconButton aria-label="delete">
-          <EditIcon />
-        </IconButton>
-      </div>
+    <Paper
+      className="p-2 flex flex-col gap-2"
+      elevation={4}
+      // sx={{ bgcolor: colors.commonWealthBg }}
+    >
+      <UpperMovementSection
+        institution={institution}
+        pending={pending}
+        userDescription={userDescription}
+        setEditing={setEditing}
+        editing={editing}
+      />
       <div className="flex gap-2 justify-between">
-        <DateSeciton date={date} valueDate={valueDate} />
-        <div className="flex flex-col w-1/2">
-          <div>{description}</div>
-        </div>
+        <DateSeciton
+          date={date}
+          valueDate={valueDate}
+          editingDescription={editing}
+        />
+        <DescriptionSection
+          description={description}
+          userDescription={userDescription}
+          editing={editing}
+          setEditing={setEditing}
+        />
         <div className="w-1/5 flex justify-center self-center">
           <Typography
             className={`${amount > 0 ? "bg-green-200" : "bg-red-200"} p-1 rounded-md`}

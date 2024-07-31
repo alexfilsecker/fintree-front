@@ -5,7 +5,7 @@ type LayoutProps = {
 };
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
-  return <div className="flex justify-center m-10">{children}</div>;
+  return <div className="flex justify-center m-1">{children}</div>;
 };
 
 export default Layout;
