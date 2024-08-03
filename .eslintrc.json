@@ -1,5 +1,5 @@
 {
-  "extends": ["next/core-web-vitals", "standard-with-typescript", "prettier"],
+  "extends": ["next/core-web-vitals", "love", "prettier"],
   "plugins": ["prettier"],
   "parserOptions": {
     "ecmaVersion": "latest",
