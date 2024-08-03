@@ -1,6 +1,6 @@
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Button, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useAppDispatch } from "@/hooks/state";
 import { patchUserDescription } from "@/redux/slices/movement/movementActions";
@@ -32,21 +32,29 @@ const DescriptionSection = ({
     userDescription ?? ""
   );
 
+  const userDescriptionTextFieldRef = useRef<HTMLInputElement | null>(null);
+
   const handleExpand = (): void => {
     setExpanded((prev) => !prev);
   };
 
+  useEffect(() => {
+    if (editing && userDescriptionTextFieldRef.current !== null) {
+      userDescriptionTextFieldRef.current.focus();
+      userDescriptionTextFieldRef.current.selectionStart =
+        userDescriptionTextFieldRef.current.value.length;
+    }
+  }, [editing, userDescriptionTextFieldRef]);
+
   const dispatch = useAppDispatch();
 
   const handleSave = (): void => {
-    console.log("\nDISPATCHING");
     void dispatch(
       patchUserDescription({
         id: movementId,
         userDescription: newUserDescription,
       })
     );
-    console.log("DISPATCHED\n");
   };
 
   const descriptionDiv = (
@@ -67,6 +75,12 @@ const DescriptionSection = ({
           onChange={(e) => {
             setNewUserDescription(e.target.value);
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSave();
+            }
+          }}
+          inputRef={userDescriptionTextFieldRef}
         />
         <div className="flex w-min self-end gap-3">
           <Button
@@ -82,7 +96,7 @@ const DescriptionSection = ({
             onClick={handleSave}
             disabled={newUserDescription === ""}
           >
-            Save
+            {userDescriptionState.loading ? "Saving..." : "Save"}
           </Button>
         </div>
         {descriptionDiv}
