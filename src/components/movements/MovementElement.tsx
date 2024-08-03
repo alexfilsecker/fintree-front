@@ -1,12 +1,15 @@
 import { Paper, Typography } from "@mui/material";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import DateSeciton from "./DateSection";
 import DescriptionSection from "./DescriptionSection";
 import UpperMovementSection from "./UpperSection";
 
-import { type MovementWithStates } from "@/redux/slices/movement/movementSlice";
+import {
+  resetUserDescriptionState,
+  type MovementWithStates,
+} from "@/redux/slices/movement/movementSlice";
 
 type MovementElementProps = {
   movement: MovementWithStates;
@@ -21,12 +24,19 @@ const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
     valueDate,
     description,
     userDescription,
+    userDescriptionState,
     pending,
     id,
-    userDescriptionState,
   } = movement;
 
   const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    if (userDescriptionState.success) {
+      setEditing(false);
+      resetUserDescriptionState(id);
+    }
+  }, [userDescriptionState, setEditing, id]);
 
   const absouluteAmount = Math.abs(amount);
   const sign = amount < 0 ? "-" : "+";
@@ -43,7 +53,7 @@ const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
       <UpperMovementSection
         institution={institution}
         pending={pending}
-        userDescription={userDescription}
+        noUserDescription={userDescription === null}
         setEditing={setEditing}
         editing={editing}
       />

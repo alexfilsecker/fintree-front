@@ -1,4 +1,5 @@
 import { Paper } from "@mui/material";
+import moment from "moment";
 import { useEffect } from "react";
 
 import MovementElement from "./MovementElement";
@@ -15,9 +16,13 @@ const Movements = (): JSX.Element => {
     void dispatch(requestMovements());
   }, [dispatch]);
 
+  const sortedMovements = Object.values(movements).sort((a, b) =>
+    moment(b.valueDate).diff(moment(a.valueDate))
+  );
+
   return (
     <Paper className="p-10 flex flex-col gap-2">
-      {Object.values(movements).map((movement, index) => (
+      {sortedMovements.map((movement, index) => (
         <MovementElement movement={movement} key={index} />
       ))}
     </Paper>

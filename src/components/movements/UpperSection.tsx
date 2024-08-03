@@ -4,7 +4,7 @@ import { IconButton, Typography } from "@mui/material";
 type UpperMovementSectionProps = {
   institution: string;
   pending: boolean;
-  userDescription: string | null;
+  noUserDescription: boolean;
   setEditing: (editing: boolean) => void;
   editing: boolean;
 };
@@ -12,14 +12,14 @@ type UpperMovementSectionProps = {
 const UpperMovementSection = ({
   institution,
   pending,
-  userDescription,
+  noUserDescription,
   setEditing,
   editing,
 }: UpperMovementSectionProps): JSX.Element => {
   return (
     <div className="flex items-center">
       <Typography className="self-center grow">{institution}</Typography>
-      {!pending && userDescription === null && (
+      {!pending && noUserDescription && (
         <div className="grow">
           <div className="w-max bg-red-300 rounded-md p-1 text-xs">
             NO USER DESCRIPTION

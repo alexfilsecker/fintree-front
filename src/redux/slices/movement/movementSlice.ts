@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import {
   patchUserDescription,
@@ -54,6 +54,13 @@ const movementsSlice = createSlice({
       state.loadingScrap = false;
       state.successScrap = false;
     },
+    resetUserDescriptionState(state, action: PayloadAction<number>) {
+      state.movements[action.payload].userDescriptionState = {
+        loading: false,
+        success: false,
+        error: false,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(requestMovements.pending, (state) => {
@@ -97,6 +104,8 @@ const movementsSlice = createSlice({
     });
     builder.addCase(patchUserDescription.fulfilled, (state, action) => {
       const movementId = getIdFromUrl(action.meta.url, 1);
+      state.movements[movementId].userDescription =
+        action.meta.arg.userDescription;
       state.movements[movementId].userDescriptionState = {
         loading: false,
         success: true,
@@ -116,6 +125,6 @@ const movementsSlice = createSlice({
   },
 });
 
-export const { resetScrap } = movementsSlice.actions;
+export const { resetScrap, resetUserDescriptionState } = movementsSlice.actions;
 
 export default movementsSlice.reducer;
