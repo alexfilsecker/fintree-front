@@ -77,6 +77,7 @@ const DescriptionSection = ({
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
+              e.preventDefault();
               handleSave();
             }
           }}
