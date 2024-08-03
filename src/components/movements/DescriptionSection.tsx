@@ -2,9 +2,15 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 
+import { useAppDispatch } from "@/hooks/state";
+import { patchUserDescription } from "@/redux/slices/movement/movementActions";
+import { type BasicState } from "@/redux/slices/movement/movementSlice";
+
 type DescriptionSectionProps = {
+  movementId: number;
   description: string;
   userDescription: string | null;
+  userDescriptionState: BasicState;
   editing: boolean;
   setEditing: (editing: boolean) => void;
 };
@@ -14,15 +20,33 @@ const Wraper = ({ children }: { children: React.ReactNode }): JSX.Element => (
 );
 
 const DescriptionSection = ({
+  movementId,
   description,
   userDescription,
+  userDescriptionState,
   editing,
   setEditing,
 }: DescriptionSectionProps): JSX.Element => {
   const [expanded, setExpanded] = useState(false);
+  const [newUserDescription, setNewUserDescription] = useState(
+    userDescription ?? ""
+  );
 
   const handleExpand = (): void => {
     setExpanded((prev) => !prev);
+  };
+
+  const dispatch = useAppDispatch();
+
+  const handleSave = (): void => {
+    console.log("\nDISPATCHING");
+    void dispatch(
+      patchUserDescription({
+        id: movementId,
+        userDescription: newUserDescription,
+      })
+    );
+    console.log("DISPATCHED\n");
   };
 
   const descriptionDiv = (
@@ -35,7 +59,15 @@ const DescriptionSection = ({
   if (editing) {
     return (
       <Wraper>
-        <TextField multiline label="User Description" size="small" />
+        <TextField
+          multiline
+          label="User Description"
+          size="small"
+          value={newUserDescription}
+          onChange={(e) => {
+            setNewUserDescription(e.target.value);
+          }}
+        />
         <div className="flex w-min self-end gap-3">
           <Button
             variant="outlined"
@@ -45,7 +77,13 @@ const DescriptionSection = ({
           >
             Cancel
           </Button>
-          <Button variant="contained">Save</Button>
+          <Button
+            variant="contained"
+            onClick={handleSave}
+            disabled={newUserDescription === ""}
+          >
+            Save
+          </Button>
         </div>
         {descriptionDiv}
       </Wraper>

@@ -17,7 +17,7 @@ const Movements = (): JSX.Element => {
 
   return (
     <Paper className="p-10 flex flex-col gap-2">
-      {movements.map((movement, index) => (
+      {Object.values(movements).map((movement, index) => (
         <MovementElement movement={movement} key={index} />
       ))}
     </Paper>

@@ -1,7 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
-import moment from "moment";
 
-import { requestMovements, requestScrap } from "./movementActions";
+import {
+  patchUserDescription,
+  requestMovements,
+  requestScrap,
+} from "./movementActions";
+
+import getIdFromUrl from "@/utils/getIdFromUrl";
+
+export type BasicState = {
+  loading: boolean;
+  success: boolean;
+  error: boolean;
+};
 
 export type Movement = {
   id: number;
@@ -15,15 +26,21 @@ export type Movement = {
   userDescription: string | null;
 };
 
+type OtherStates = {
+  userDescriptionState: BasicState;
+};
+
+export type MovementWithStates = Movement & OtherStates;
+
 type MovementsState = {
-  movements: Movement[];
+  movements: Record<number, MovementWithStates>;
   loadingMovements: boolean;
   loadingScrap: boolean;
   successScrap: boolean;
 };
 
 const initialState: MovementsState = {
-  movements: [],
+  movements: {},
   loadingMovements: false,
   loadingScrap: false,
   successScrap: false,
@@ -46,20 +63,18 @@ const movementsSlice = createSlice({
       state.loadingMovements = false;
     });
     builder.addCase(requestMovements.fulfilled, (state, action) => {
-      // const movements = action.payload.movements.map((movement) => {
-      //   return {
-      //     ...movement,
-      //     date: moment(movement.date),
-      //     valueDate: moment(movement.valueDate),
-      //   };
-      // });
       const movements = action.payload.movements;
-      console.log("peo");
-      state.movements = movements.sort((a, b) =>
-        moment(b.valueDate).diff(moment(a.valueDate))
-      );
+      movements.forEach((movement) => {
+        state.movements[movement.id] = {
+          ...movement,
+          userDescriptionState: {
+            loading: false,
+            success: false,
+            error: false,
+          },
+        };
+      });
       state.loadingMovements = false;
-      console.log(state.movements[0]);
     });
     builder.addCase(requestScrap.pending, (state) => {
       state.loadingScrap = true;
@@ -71,6 +86,32 @@ const movementsSlice = createSlice({
     builder.addCase(requestScrap.fulfilled, (state) => {
       state.loadingScrap = false;
       state.successScrap = true;
+    });
+    builder.addCase(patchUserDescription.pending, (state, action) => {
+      const movementId = getIdFromUrl(action.meta.url, 1);
+      state.movements[movementId].userDescriptionState = {
+        loading: true,
+        success: false,
+        error: false,
+      };
+    });
+    builder.addCase(patchUserDescription.fulfilled, (state, action) => {
+      const movementId = getIdFromUrl(action.meta.url, 1);
+      state.movements[movementId].userDescriptionState = {
+        loading: false,
+        success: true,
+        error: false,
+      };
+    });
+    builder.addCase(patchUserDescription.rejected, (state, action) => {
+      if (action.meta.url !== undefined) {
+        const movementId = getIdFromUrl(action.meta.url, 1);
+        state.movements[movementId].userDescriptionState = {
+          loading: false,
+          success: false,
+          error: true,
+        };
+      }
     });
   },
 });

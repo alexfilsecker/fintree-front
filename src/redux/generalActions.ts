@@ -4,7 +4,7 @@ import Router from "next/router";
 
 import { getRefreshToken, getToken, isTokenExpired } from "../utils/auth";
 
-import { get, post, requestNewToken } from "./api";
+import { get, patch, post, requestNewToken } from "./api";
 import handleGeneralActionError from "./handleGeneralActionError";
 
 import type { KnownError } from "./knownError";
@@ -23,15 +23,73 @@ const defaultOptions: Options = {
   withToken: true,
 };
 
+type Extras = {
+  rejectValue: KnownError;
+  pendingMeta: { url: string };
+  fulfilledMeta: { url: string };
+  rejectedMeta: { url: string };
+};
+
+export type GeneralRequest<RT = unknown, A = void> = AsyncThunk<RT, A, Extras>;
+
+type fixPathReturnType<A> = {
+  path: string;
+  params: A;
+};
+
+const fixPath = <A extends object>(
+  path: string,
+  params: A extends object ? A : never
+): fixPathReturnType<A> => {
+  if (typeof params !== "object" || params === null) {
+    throw new Error("Params is not an object or is null");
+  }
+
+  const returnParams = { ...params };
+
+  const keysToFind = path.match(/:[a-zA-Z0-9]*/g);
+  if (keysToFind === null) {
+    return { path, params };
+  }
+  keysToFind.forEach((key) => {
+    const keyWithoutColon = key.slice(1);
+    if (!(keyWithoutColon in params)) {
+      throw new Error(`Key ${keyWithoutColon} not found in params`);
+    }
+    const asertedKey = keyWithoutColon as keyof A;
+    const value = params[asertedKey];
+    if (typeof value === "number") {
+      path = path.replace(key, value.toString());
+    } else if (typeof value === "string") {
+      path = path.replace(key, value);
+    } else {
+      throw new Error(
+        `Value of key ${keyWithoutColon} is not a number or a string`
+      );
+    }
+    returnParams[asertedKey] = undefined as any;
+  });
+
+  return { path, params: returnParams };
+};
+
 const generateRequest = <RT = unknown, A = void>(
   method: "get" | "post" | "patch" | "put",
   path: string,
   options: Options = defaultOptions
-): AsyncThunk<RT, A, { rejectValue: KnownError }> => {
+): GeneralRequest<RT, A> => {
   const typePrefix = `${method.toUpperCase()}:${path}`;
-  return createAsyncThunk<RT, A, { rejectValue: KnownError }>(
+
+  return createAsyncThunk<RT, A, Extras>(
     typePrefix,
     async (params: A, thunkApi) => {
+      let fixedPath = path;
+      let fixedParams = params;
+      if (typeof params === "object" && params !== null) {
+        const fix = fixPath(path, params);
+        fixedPath = fix.path;
+        fixedParams = fix.params;
+      }
       if (options.withToken) {
         try {
           const token = getToken();
@@ -51,37 +109,63 @@ const generateRequest = <RT = unknown, A = void>(
           void Router.push("/").then(async () => {
             window.location.reload();
           });
-          return thunkApi.rejectWithValue(handleGeneralActionError(error));
+          return thunkApi.rejectWithValue(handleGeneralActionError(error), {
+            url: fixedPath,
+          });
         }
       }
+
+      let response;
       try {
         switch (method) {
           case "post": {
-            const response = await post<A, AxiosReturnType<RT>>(
-              path,
-              params,
+            response = await post<A, AxiosReturnType<RT>>(
+              fixedPath,
+              fixedParams,
               options.withToken
             );
-
-            return response.data.responseData;
+            break;
           }
 
           case "get": {
-            const response = await get<A, AxiosReturnType<RT>>(
-              path,
-              params,
+            response = await get<A, AxiosReturnType<RT>>(
+              fixedPath,
+              fixedParams,
               options.withToken
             );
-
-            return response.data.responseData;
+            break;
           }
+
+          case "patch": {
+            response = await patch<A, AxiosReturnType<RT>>(
+              fixedPath,
+              fixedParams,
+              options.withToken
+            );
+            break;
+          }
+
           default:
-            return null as RT;
+            throw new Error("Method not implemented");
         }
       } catch (error: unknown) {
         const returnError = handleGeneralActionError(error);
-        return thunkApi.rejectWithValue(returnError);
+        return thunkApi.rejectWithValue(returnError, { url: fixedPath });
       }
+
+      return thunkApi.fulfillWithValue(response.data.responseData, {
+        url: fixedPath,
+      });
+    },
+    {
+      getPendingMeta: ({ arg }) => {
+        let fixedPath = path;
+        if (typeof arg === "object" && arg !== null) {
+          const fix = fixPath(path, arg);
+          fixedPath = fix.path;
+        }
+        return { url: fixedPath };
+      },
     }
   );
 };

@@ -6,10 +6,10 @@ import DateSeciton from "./DateSection";
 import DescriptionSection from "./DescriptionSection";
 import UpperMovementSection from "./UpperSection";
 
-import { type Movement } from "@/redux/slices/movement/movementSlice";
+import { type MovementWithStates } from "@/redux/slices/movement/movementSlice";
 
 type MovementElementProps = {
-  movement: Movement;
+  movement: MovementWithStates;
 };
 
 const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
@@ -22,7 +22,8 @@ const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
     description,
     userDescription,
     pending,
-    // id,
+    id,
+    userDescriptionState,
   } = movement;
 
   const [editing, setEditing] = useState(false);
@@ -55,8 +56,10 @@ const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
         <DescriptionSection
           description={description}
           userDescription={userDescription}
+          userDescriptionState={userDescriptionState}
           editing={editing}
           setEditing={setEditing}
+          movementId={id}
         />
         <div className="w-1/5 flex justify-center self-center">
           <Typography

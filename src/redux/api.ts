@@ -43,6 +43,52 @@ export const get = async <A, RT>(
   });
 };
 
+export const patch = async <A, RT>(
+  path: string,
+  body: A,
+  withToken = true
+): Promise<AxiosResponse<RT, any>> => {
+  let token: string | undefined;
+  if (withToken) {
+    token = Cookies.get("token");
+  }
+  const url = `${baseURL}/${path}`;
+
+  return await axios<RT>({
+    method: "PATCH",
+    url,
+    data: body,
+    headers: {
+      Authorization: withToken ? `Bearer ${token}` : undefined,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const wierdPatch = async <A, B, RT>(
+  path: string,
+  body: B,
+  params: A,
+  withToken = true
+): Promise<AxiosResponse<RT, any>> => {
+  let token: string | undefined;
+  if (withToken) {
+    token = Cookies.get("token");
+  }
+  const url = `${baseURL}/${path}/`;
+
+  return await axios<RT>({
+    method: "PATCH",
+    url,
+    data: body,
+    params,
+    headers: {
+      Authorization: withToken ? `Bearer ${token}` : undefined,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
 type NewTokenPayload = {
   status: number;
   responseData: {
