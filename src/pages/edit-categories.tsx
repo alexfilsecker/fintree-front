@@ -1,12 +1,14 @@
-"use-client";
-import dynamic from "next/dynamic";
+// "use-client";
+// import dynamic from "next/dynamic";
 
-const Canvas = dynamic(async () => await import("@/components/Canvas"), {
-  ssr: false,
-});
+import EditCategories from "@/components/categories/EditCategories";
 
-const EditCategories = (): JSX.Element => {
-  return <Canvas />;
+// const Canvas = dynamic(async () => await import("@/components/canvas/Canvas"), {
+//   ssr: false,
+// });
+
+const EditCategoriesPage = (): JSX.Element => {
+  return <EditCategories />;
 };
 
-export default EditCategories;
+export default EditCategoriesPage;
