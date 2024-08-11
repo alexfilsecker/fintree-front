@@ -1,5 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
+import { type BasicState } from "../basicState";
+
 import {
   patchUserDescription,
   requestMovements,
@@ -7,12 +9,6 @@ import {
 } from "./movementActions";
 
 import getIdFromUrl from "@/utils/getIdFromUrl";
-
-export type BasicState = {
-  loading: boolean;
-  success: boolean;
-  error: boolean;
-};
 
 export type Movement = {
   id: number;
