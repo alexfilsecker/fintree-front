@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import Arrow, { type ArrowProps } from "./Arrow";
+import Arrow, { type ArrowSVGProps } from "./Arrow";
 
 const ArrowBetweenDivs = (): JSX.Element => {
   const div1Ref = useRef<HTMLDivElement>(null);
   const div2Ref = useRef<HTMLDivElement>(null);
-  const parentRef = useRef<HTMLDivElement>(null);
+  const arrowRef = useRef<SVGSVGElement>(null);
 
-  const [arrowProps, setArrowProps] = useState<ArrowProps | null>(null);
+  const [arrowProps, setArrowProps] = useState<ArrowSVGProps | null>(null);
 
   useEffect(() => {
     if (
       div1Ref.current === null ||
       div2Ref.current === null ||
-      parentRef.current === null
+      arrowRef.current === null
     ) {
       return;
     }
     const div1Rect = div1Ref.current.getBoundingClientRect();
     const div2Rect = div2Ref.current.getBoundingClientRect();
-    const parentRect = parentRef.current.getBoundingClientRect();
+    const parentRect = arrowRef.current.getBoundingClientRect();
 
     const relativeDiv1Rect = {
       top: div1Rect.top - parentRect.top,
@@ -45,17 +45,21 @@ const ArrowBetweenDivs = (): JSX.Element => {
       endY: relativeDiv2Rect.top,
       containerWidth: parentRect.width,
       containerHeight: parentRect.height,
+      arrowRef,
     };
-    console.log("🚀 - arrowProps:", arrowProps);
 
     setArrowProps(arrowProps);
   }, []);
 
   return (
-    <div ref={parentRef}>
-      <div ref={div1Ref}>Div 1</div>
+    <div className="flex flex-col">
+      <div ref={div1Ref} className="bg-gray-100">
+        Div 1
+      </div>
       {arrowProps !== null && <Arrow {...arrowProps} />}
-      <div ref={div2Ref}>Div 2</div>
+      <div ref={div2Ref} className="bg-green-100">
+        Div 2
+      </div>
     </div>
   );
 };

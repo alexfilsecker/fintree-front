@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useRef } from "react";
 
-export type ArrowProps = {
+import useArrow from "@/hooks/useArrow";
+
+export type ArrowSVGProps = {
   startX: number;
   startY: number;
   endX: number;
@@ -9,28 +11,35 @@ export type ArrowProps = {
   containerHeight: number;
 };
 
-const Arrow = ({
-  startX,
-  startY,
-  endX,
-  endY,
-  containerWidth,
-  containerHeight,
-}: ArrowProps): JSX.Element => {
+type ArrowProps = {
+  parentRef: HTMLDivElement | undefined;
+  childRef: HTMLDivElement | undefined;
+};
+
+const Arrow = ({ parentRef, childRef }: ArrowProps): JSX.Element => {
+  const arrowRef = useRef<SVGSVGElement>(null);
+  const arrowProps = useArrow({ parentRef, childRef, arrowRef });
+  console.log("🚀 - arrowProps:", arrowProps);
+
+  const width = `${arrowProps === null ? "20" : arrowProps.containerWidth}`;
+
   return (
     <svg
       width="100%"
-      height="100%"
-      viewBox={`0 0 ${containerWidth} ${containerHeight}`}
+      height="60px"
+      viewBox={`0 0 ${arrowProps === null ? "20" : arrowProps.containerWidth} ${arrowProps === null ? "20" : arrowProps.containerHeight}`}
+      ref={arrowRef}
     >
-      <line
-        x1={startX}
-        y1={startY}
-        x2={endX}
-        y2={endY}
-        stroke="black"
-        strokeWidth="2"
-      />
+      {arrowProps !== null && (
+        <line
+          x1={arrowProps.startX}
+          y1={arrowProps.startY}
+          x2={arrowProps.endX}
+          y2={arrowProps.endY}
+          stroke="black"
+          strokeWidth="2"
+        />
+      )}
     </svg>
   );
 };
