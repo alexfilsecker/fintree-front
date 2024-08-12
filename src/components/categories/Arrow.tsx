@@ -19,9 +19,6 @@ type ArrowProps = {
 const Arrow = ({ parentRef, childRef }: ArrowProps): JSX.Element => {
   const arrowRef = useRef<SVGSVGElement>(null);
   const arrowProps = useArrow({ parentRef, childRef, arrowRef });
-  console.log("🚀 - arrowProps:", arrowProps);
-
-  const width = `${arrowProps === null ? "20" : arrowProps.containerWidth}`;
 
   return (
     <svg
