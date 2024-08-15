@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import Arrow, { type ArrowSVGProps } from "./Arrow";
+import Arrow, { type ArrowSVGProps } from "./Arrows";
 
 const ArrowBetweenDivs = (): JSX.Element => {
   const div1Ref = useRef<HTMLDivElement>(null);

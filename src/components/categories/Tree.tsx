@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type MutableRefObject } from "react";
 
-import Arrow from "./Arrow";
+import Arrow from "./Arrows";
 import CategoryBox from "./CategoryBox";
 
 export type TreeProps = {
@@ -22,6 +22,8 @@ const Tree = ({ name, treeChildren, refs, id }: TreeProps): JSX.Element => {
     setParentRef(parentRef);
   }, [parentRef, setParentRef, refs, id]);
 
+  const childrenRefs = treeChildren?.map((child) => refs.current.get(child.id));
+
   return (
     <div
       className="flex flex-col"
@@ -32,18 +34,17 @@ const Tree = ({ name, treeChildren, refs, id }: TreeProps): JSX.Element => {
       }}
     >
       <CategoryBox name={name} />
+      <Arrow parentRef={parentRef} childrenRefs={childrenRefs} />
 
       {treeChildren !== undefined && (
         <>
-          <div className="flex">
-            {treeChildren.map((child, index) => {
+          <div className="flex gap-3 justify-center">
+            {/* {treeChildren.map((child, index) => {
               const childRef = refs.current.get(child.id);
               return (
                 <Arrow parentRef={parentRef} key={index} childRef={childRef} />
               );
-            })}
-          </div>
-          <div className="flex gap-3">
+            })} */}
             {treeChildren.map((child, index) => {
               return (
                 <Tree
