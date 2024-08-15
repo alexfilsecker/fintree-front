@@ -39,12 +39,6 @@ const Tree = ({ name, treeChildren, refs, id }: TreeProps): JSX.Element => {
       {treeChildren !== undefined && (
         <>
           <div className="flex gap-3 justify-center">
-            {/* {treeChildren.map((child, index) => {
-              const childRef = refs.current.get(child.id);
-              return (
-                <Arrow parentRef={parentRef} key={index} childRef={childRef} />
-              );
-            })} */}
             {treeChildren.map((child, index) => {
               return (
                 <Tree
