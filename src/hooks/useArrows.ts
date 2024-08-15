@@ -1,5 +1,7 @@
 import { type RefObject, useEffect, useState } from "react";
 
+import { useAppSelector } from "./state";
+
 import {
   type SVGProps,
   type ArrowSVGProps,
@@ -9,6 +11,7 @@ type useArrowProps = {
   parentRef: HTMLDivElement | undefined;
   childrenRefs: Array<HTMLDivElement | undefined> | undefined;
   arrowRef: RefObject<SVGSVGElement>;
+  childrenEditings: boolean[] | undefined;
 };
 
 type useArrowReturn = {
@@ -20,9 +23,12 @@ const useArrows = ({
   parentRef,
   childrenRefs,
   arrowRef,
+  childrenEditings,
 }: useArrowProps): useArrowReturn => {
   const [arrowProps, setArrowProps] = useState<ArrowSVGProps[] | null>(null);
   const [svgProps, setSVGProps] = useState<SVGProps | null>(null);
+
+  const { categoriesEditHash } = useAppSelector((state) => state.categories);
 
   useEffect(() => {
     if (parentRef === undefined) {
@@ -35,6 +41,9 @@ const useArrows = ({
       return;
     }
     if (childrenRefs.length === 0) {
+      return;
+    }
+    if (childrenEditings === undefined) {
       return;
     }
 
@@ -85,7 +94,7 @@ const useArrows = ({
     }
 
     setArrowProps(arrowsPropsVar as ArrowSVGProps[]);
-  }, [arrowRef, childrenRefs, parentRef]);
+  }, [arrowRef, childrenRefs, parentRef, childrenEditings, categoriesEditHash]);
 
   if (arrowProps === null || arrowProps.length === 0 || svgProps === null) {
     return null;

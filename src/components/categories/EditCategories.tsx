@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 
-// import ArrowBetweenDivs from "./ArrowBetweenDivs";
 import Tree from "./Tree";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/state";
@@ -31,7 +30,6 @@ const EditCategories = (): JSX.Element => {
           />
         );
       })}
-      {/* <ArrowBetweenDivs /> */}
     </div>
   );
 };

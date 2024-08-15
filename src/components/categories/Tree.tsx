@@ -5,6 +5,8 @@ import { useEffect, useState, type MutableRefObject } from "react";
 import Arrow from "./Arrows";
 import CategoryBox from "./CategoryBox";
 
+import { useAppSelector } from "@/hooks/state";
+
 export type TreeProps = {
   id: number;
   name: string;
@@ -17,12 +19,18 @@ const Tree = ({ name, treeChildren, refs, id }: TreeProps): JSX.Element => {
     undefined
   );
 
+  const { categories } = useAppSelector((state) => state.categories);
+
   useEffect(() => {
     const parentRef = refs.current.get(id);
     setParentRef(parentRef);
   }, [parentRef, setParentRef, refs, id]);
 
   const childrenRefs = treeChildren?.map((child) => refs.current.get(child.id));
+
+  const childrenEditings = treeChildren?.map(
+    (child) => categories[child.id].editing
+  );
 
   return (
     <div
@@ -33,8 +41,12 @@ const Tree = ({ name, treeChildren, refs, id }: TreeProps): JSX.Element => {
         }
       }}
     >
-      <CategoryBox name={name} />
-      <Arrow parentRef={parentRef} childrenRefs={childrenRefs} />
+      <CategoryBox name={name} id={id} />
+      <Arrow
+        parentRef={parentRef}
+        childrenRefs={childrenRefs}
+        childrenEditings={childrenEditings}
+      />
 
       {treeChildren !== undefined && (
         <>

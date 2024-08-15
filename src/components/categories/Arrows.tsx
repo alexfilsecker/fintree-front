@@ -17,18 +17,28 @@ export type SVGProps = {
 type ArrowProps = {
   parentRef: HTMLDivElement | undefined;
   childrenRefs: Array<HTMLDivElement | undefined> | undefined;
+  childrenEditings: boolean[] | undefined;
 };
 
-const Arrow = ({ parentRef, childrenRefs }: ArrowProps): JSX.Element => {
+const Arrow = ({
+  parentRef,
+  childrenRefs,
+  childrenEditings,
+}: ArrowProps): JSX.Element => {
   const arrowRef = useRef<SVGSVGElement>(null);
-  const arrowProps = useArrows({ parentRef, childrenRefs, arrowRef });
+  const arrowProps = useArrows({
+    parentRef,
+    childrenRefs,
+    arrowRef,
+    childrenEditings,
+  });
 
   const width = arrowProps?.svgProps.containerWidth ?? 20;
   const height = arrowProps?.svgProps.containerHeight ?? 20;
 
   return (
     <svg
-      width="100%"
+      className="w-full"
       height="30px"
       viewBox={`0 0 ${width} ${height}`}
       ref={arrowRef}

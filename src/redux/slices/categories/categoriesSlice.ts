@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import { type BasicState } from "../basicState";
 
@@ -11,12 +11,14 @@ export type Category = {
 };
 
 type CategoriesState = {
-  categories: Record<number, Category>;
+  categories: Record<number, Category & { editing: boolean }>;
   getCategoriesState: BasicState;
+  categoriesEditHash: string;
 };
 
 const initialState: CategoriesState = {
   categories: {},
+  categoriesEditHash: "",
   getCategoriesState: {
     loading: false,
     success: false,
@@ -24,10 +26,29 @@ const initialState: CategoriesState = {
   },
 };
 
+type SetEditCategoryPayload = {
+  categoryId: number;
+  editing: boolean;
+};
+
+const hashCategoryEdits = (
+  categories: Record<number, Category & { editing: boolean }>
+): string => {
+  return Object.values(categories)
+    .map((category) => `${category.id}-${category.editing}`)
+    .join(",");
+};
+
 const categoriesSlice = createSlice({
   name: "categories",
   initialState,
-  reducers: {},
+  reducers: {
+    setEditCategory: (state, action: PayloadAction<SetEditCategoryPayload>) => {
+      const { categoryId, editing } = action.payload;
+      state.categories[categoryId].editing = editing;
+      state.categoriesEditHash = hashCategoryEdits(state.categories);
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(requestCategories.pending, (state) => {
       state.getCategoriesState = {
@@ -46,15 +67,18 @@ const categoriesSlice = createSlice({
     builder.addCase(requestCategories.fulfilled, (state, action) => {
       const categories = action.payload.categories;
       categories.forEach((category) => {
-        state.categories[category.id] = category;
+        state.categories[category.id] = { ...category, editing: false };
       });
       state.getCategoriesState = {
         loading: false,
         success: true,
         error: false,
       };
+      state.categoriesEditHash = hashCategoryEdits(state.categories);
     });
   },
 });
+
+export const { setEditCategory } = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;
