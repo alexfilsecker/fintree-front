@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import Tree from "./Tree";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/state";
+import useReload from "@/hooks/useReload";
 import { requestCategories } from "@/redux/slices/categories/categoriesActions";
 import { createCategoryMap, formatMapCategories } from "@/utils/categories";
 
@@ -13,9 +14,17 @@ const EditCategories = (): JSX.Element => {
   }, [dispatch]);
 
   const refTree = useRef<Map<number, HTMLDivElement>>(new Map());
-  const { categories } = useAppSelector((state) => state.categories);
+  const { categories, categoriesEditHash } = useAppSelector(
+    (state) => state.categories
+  );
   const categoriesMap = createCategoryMap(categories);
   const tree = formatMapCategories(categoriesMap, refTree);
+
+  const reload = useReload(categoriesEditHash);
+
+  if (reload) {
+    return <div></div>;
+  }
 
   return (
     <div className="flex gap-3">
