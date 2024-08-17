@@ -22,7 +22,7 @@ export type CategoryApiResponse = {
   parentCategoryId: number | null;
 };
 
-type Category = CategoryApiResponse & {
+export type Category = CategoryApiResponse & {
   editing: boolean;
   editingName: string;
   editingParentCategoryId: number;

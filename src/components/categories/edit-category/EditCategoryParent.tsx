@@ -8,6 +8,7 @@ import {
 
 import { useAppDispatch, useAppSelector } from "@/hooks/state";
 import { setCategoryEditingParentCategoryId } from "@/redux/slices/categories/categoriesSlice";
+import { getNonDescendantCategories } from "@/utils/categories";
 
 type EditCategoryParentProps = {
   id: number;
@@ -19,9 +20,7 @@ const EditCategoryParent = ({ id }: EditCategoryParentProps): JSX.Element => {
   const { categories } = useAppSelector((state) => state.categories);
   const { editingParentCategoryId } = categories[id];
 
-  const otherCategories = Object.values(categories).filter((category) => {
-    return category.id !== id;
-  });
+  const nonDescendantCategories = getNonDescendantCategories(categories, id);
 
   const handleSelectChange = (e: SelectChangeEvent<number>): void => {
     const value = e.target.value;
@@ -35,6 +34,7 @@ const EditCategoryParent = ({ id }: EditCategoryParentProps): JSX.Element => {
       })
     );
   };
+
   return (
     <FormControl size="small">
       <InputLabel id="select-label">Parent Category</InputLabel>
@@ -44,7 +44,7 @@ const EditCategoryParent = ({ id }: EditCategoryParentProps): JSX.Element => {
         value={editingParentCategoryId}
         onChange={handleSelectChange}
       >
-        {otherCategories.map((category) => (
+        {nonDescendantCategories.map((category) => (
           <MenuItem key={category.id} value={category.id}>
             {category.name}
           </MenuItem>

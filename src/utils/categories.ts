@@ -1,7 +1,10 @@
 import { type MutableRefObject } from "react";
 
 import { type TreeProps } from "@/components/categories/Tree";
-import { type CategoryApiResponse } from "@/redux/slices/categories/categoriesSlice";
+import {
+  type Category,
+  type CategoryApiResponse,
+} from "@/redux/slices/categories/categoriesSlice";
 
 export type CategoryWithChildrenIds = CategoryApiResponse & {
   childrenIds: number[];
@@ -55,4 +58,23 @@ export const formatMapCategories = (
     .map((category) => buildTree(category));
 
   return tree;
+};
+
+export const getNonDescendantCategories = (
+  categories: Record<number, Category>,
+  ancestorId: number
+): Category[] => {
+  const isDescendant = (category: Category, ancestorId: number): boolean => {
+    if (category.id === ancestorId) {
+      return true;
+    }
+    if (category.parentCategoryId === null) {
+      return false;
+    }
+    return isDescendant(categories[category.parentCategoryId], ancestorId);
+  };
+
+  return Object.values(categories).filter(
+    (category) => !isDescendant(category, ancestorId)
+  );
 };
