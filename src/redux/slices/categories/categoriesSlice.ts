@@ -158,9 +158,16 @@ const categoriesSlice = createSlice({
     builder.addCase(deleteCategory.fulfilled, (state, action) => {
       const categoryId = getIdFromUrl(action.meta.url, 1);
       state.categories[categoryId].deletingState = basicFulfilledState;
+      const grandParentId = state.categories[categoryId].parentCategoryId;
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete state.categories[categoryId];
       state.categoriesEditHash = hashCategoryEdits(state.categories);
+      const childs = Object.values(state.categories).filter(
+        (category) => category.parentCategoryId === categoryId
+      );
+      childs.forEach((child) => {
+        state.categories[child.id].parentCategoryId = grandParentId;
+      });
     });
   },
 });

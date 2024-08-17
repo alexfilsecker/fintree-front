@@ -27,7 +27,7 @@ const EditCategories = (): JSX.Element => {
   }
 
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3 pt-20">
       {tree.map((child, index) => {
         return (
           <Tree
