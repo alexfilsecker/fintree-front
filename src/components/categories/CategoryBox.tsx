@@ -1,7 +1,7 @@
 import { Edit } from "@mui/icons-material";
 import { IconButton, Paper } from "@mui/material";
 
-import EditCategory from "./EditCategory";
+import EditCategory from "./edit-category/EditCategory";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/state";
 import { setEditCategory } from "@/redux/slices/categories/categoriesSlice";
