@@ -27,5 +27,3 @@ export const patchUserDescription = generateRequest<
   PatchUserDescriptionResponse,
   PatchUserDescriptionPayload
 >("patch", "movements/:id/user-description");
-
-export const hola = generateRequest("get", "movements/hola");

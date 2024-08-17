@@ -1,12 +1,14 @@
 import { type MutableRefObject } from "react";
 
 import { type TreeProps } from "@/components/categories/Tree";
-import { type Category } from "@/redux/slices/categories/categoriesSlice";
+import { type CategoryApiResponse } from "@/redux/slices/categories/categoriesSlice";
 
-export type CategoryWithChildrenIds = Category & { childrenIds: number[] };
+export type CategoryWithChildrenIds = CategoryApiResponse & {
+  childrenIds: number[];
+};
 
 export const createCategoryMap = (
-  categories: Record<number, Category>
+  categories: Record<number, CategoryApiResponse>
 ): Map<number, CategoryWithChildrenIds> => {
   const categoriesWithChildren = new Map<number, CategoryWithChildrenIds>();
 

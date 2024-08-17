@@ -1,6 +1,12 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-import { type BasicState } from "../basicState";
+import {
+  basicFulfilledState,
+  basicInitialState,
+  basicPendingState,
+  basicRejectedState,
+  type BasicState,
+} from "../basicState";
 
 import {
   patchUserDescription,
@@ -51,11 +57,7 @@ const movementsSlice = createSlice({
       state.successScrap = false;
     },
     resetUserDescriptionState(state, action: PayloadAction<number>) {
-      state.movements[action.payload].userDescriptionState = {
-        loading: false,
-        success: false,
-        error: false,
-      };
+      state.movements[action.payload].userDescriptionState = basicInitialState;
     },
   },
   extraReducers: (builder) => {
@@ -70,11 +72,7 @@ const movementsSlice = createSlice({
       movements.forEach((movement) => {
         state.movements[movement.id] = {
           ...movement,
-          userDescriptionState: {
-            loading: false,
-            success: false,
-            error: false,
-          },
+          userDescriptionState: basicInitialState,
         };
       });
       state.loadingMovements = false;
@@ -92,30 +90,18 @@ const movementsSlice = createSlice({
     });
     builder.addCase(patchUserDescription.pending, (state, action) => {
       const movementId = getIdFromUrl(action.meta.url, 1);
-      state.movements[movementId].userDescriptionState = {
-        loading: true,
-        success: false,
-        error: false,
-      };
+      state.movements[movementId].userDescriptionState = basicPendingState;
     });
     builder.addCase(patchUserDescription.fulfilled, (state, action) => {
       const movementId = getIdFromUrl(action.meta.url, 1);
       state.movements[movementId].userDescription =
         action.meta.arg.userDescription;
-      state.movements[movementId].userDescriptionState = {
-        loading: false,
-        success: true,
-        error: false,
-      };
+      state.movements[movementId].userDescriptionState = basicFulfilledState;
     });
     builder.addCase(patchUserDescription.rejected, (state, action) => {
       if (action.meta.url !== undefined) {
         const movementId = getIdFromUrl(action.meta.url, 1);
-        state.movements[movementId].userDescriptionState = {
-          loading: false,
-          success: false,
-          error: true,
-        };
+        state.movements[movementId].userDescriptionState = basicRejectedState;
       }
     });
   },
