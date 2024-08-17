@@ -1,3 +1,4 @@
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import {
   Button,
   FormControl,
@@ -10,12 +11,16 @@ import {
 import { useEffect } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/state";
-import { patchCategory } from "@/redux/slices/categories/categoriesActions";
+import {
+  deleteCategory,
+  patchCategory,
+} from "@/redux/slices/categories/categoriesActions";
 import {
   resetPatchingCategoryState,
   setCategoryEditingName,
   setCategoryEditingParentCategoryId,
   setEditCategory,
+  setMoreExpanded,
 } from "@/redux/slices/categories/categoriesSlice";
 
 type EditCategoryProps = {
@@ -26,8 +31,13 @@ const EditCategory = ({ id }: EditCategoryProps): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const { categories } = useAppSelector((state) => state.categories);
-  const { editingName, editingParentCategoryId, patchingState, name } =
-    categories[id];
+  const {
+    editingName,
+    editingParentCategoryId,
+    patchingState,
+    name,
+    moreExpanded,
+  } = categories[id];
 
   const otherCategories = Object.values(categories).filter((category) => {
     return category.id !== id;
@@ -62,6 +72,15 @@ const EditCategory = ({ id }: EditCategoryProps): JSX.Element => {
         editingParentCategoryId: value,
       })
     );
+  };
+
+  const handleExpandMoreButton = (): void => {
+    dispatch(setMoreExpanded({ categoryId: id, moreExpanded: !moreExpanded }));
+  };
+
+  const handleDeleteButton = (): void => {
+    console.log("hooola");
+    void dispatch(deleteCategory({ id }));
   };
 
   const handleCancelButton = (): void => {
@@ -111,6 +130,23 @@ const EditCategory = ({ id }: EditCategoryProps): JSX.Element => {
           <MenuItem value={0}>None</MenuItem>
         </Select>
       </FormControl>
+      <div className="flex flex-col gap-3">
+        {moreExpanded && (
+          <Button variant="outlined" color="error" onClick={handleDeleteButton}>
+            Delete
+          </Button>
+        )}
+        <div className="flex justify-end">
+          <Button
+            size="small"
+            endIcon={moreExpanded ? <ExpandLess /> : <ExpandMore />}
+            onClick={handleExpandMoreButton}
+            className="px-4"
+          >
+            {moreExpanded ? "Less" : "More"}
+          </Button>
+        </div>
+      </div>
       <div className="flex gap-3 justify-end">
         <Button size="small" variant="outlined" onClick={handleCancelButton}>
           Cancel

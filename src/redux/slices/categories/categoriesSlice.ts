@@ -8,7 +8,11 @@ import {
   type BasicState,
 } from "../basicState";
 
-import { patchCategory, requestCategories } from "./categoriesActions";
+import {
+  deleteCategory,
+  patchCategory,
+  requestCategories,
+} from "./categoriesActions";
 
 import getIdFromUrl from "@/utils/getIdFromUrl";
 
@@ -22,7 +26,9 @@ type Category = CategoryApiResponse & {
   editing: boolean;
   editingName: string;
   editingParentCategoryId: number;
+  moreExpanded: boolean;
   patchingState: BasicState;
+  deletingState: BasicState;
 };
 
 type CategoriesState = {
@@ -34,11 +40,7 @@ type CategoriesState = {
 const initialState: CategoriesState = {
   categories: {},
   categoriesEditHash: "",
-  getCategoriesState: {
-    loading: false,
-    success: false,
-    error: false,
-  },
+  getCategoriesState: basicInitialState,
 };
 
 type SetEditCategoryPayload = {
@@ -54,6 +56,11 @@ type SetCategoryEditingNamePayload = {
 type SetCategoryEditingParentCategoryId = {
   categoryId: number;
   editingParentCategoryId: number;
+};
+
+type SetCategoryMoreExpanded = {
+  categoryId: number;
+  moreExpanded: boolean;
 };
 
 const hashCategoryEdits = (
@@ -91,6 +98,13 @@ const categoriesSlice = createSlice({
       state.categories[categoryId].editingParentCategoryId =
         editingParentCategoryId;
     },
+    setMoreExpanded: (
+      state,
+      action: PayloadAction<SetCategoryMoreExpanded>
+    ) => {
+      const { categoryId, moreExpanded } = action.payload;
+      state.categories[categoryId].moreExpanded = moreExpanded;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(requestCategories.pending, (state) => {
@@ -107,7 +121,9 @@ const categoriesSlice = createSlice({
           editing: false,
           editingName: category.name,
           editingParentCategoryId: category.parentCategoryId ?? 0,
+          moreExpanded: false,
           patchingState: basicInitialState,
+          deletingState: basicInitialState,
         };
       });
       state.getCategoriesState = basicFulfilledState;
@@ -129,6 +145,23 @@ const categoriesSlice = createSlice({
       state.categories[movementId].name = action.meta.arg.name;
       state.categories[movementId].parentCategoryId = action.meta.arg.parentId;
     });
+    builder.addCase(deleteCategory.pending, (state, action) => {
+      const categoryId = getIdFromUrl(action.meta.url, 1);
+      state.categories[categoryId].deletingState = basicPendingState;
+    });
+    builder.addCase(deleteCategory.rejected, (state, action) => {
+      if (action.meta.url !== undefined) {
+        const categoryId = getIdFromUrl(action.meta.url, 1);
+        state.categories[categoryId].deletingState = basicRejectedState;
+      }
+    });
+    builder.addCase(deleteCategory.fulfilled, (state, action) => {
+      const categoryId = getIdFromUrl(action.meta.url, 1);
+      state.categories[categoryId].deletingState = basicFulfilledState;
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete state.categories[categoryId];
+      state.categoriesEditHash = hashCategoryEdits(state.categories);
+    });
   },
 });
 
@@ -137,6 +170,7 @@ export const {
   setCategoryEditingName,
   resetPatchingCategoryState,
   setCategoryEditingParentCategoryId,
+  setMoreExpanded,
 } = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;

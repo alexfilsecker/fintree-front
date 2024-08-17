@@ -1,5 +1,5 @@
 import { Edit } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { IconButton, Paper } from "@mui/material";
 
 import EditCategory from "./EditCategory";
 
@@ -21,18 +21,23 @@ const CategoryBox = ({ name, id }: CategoryBoxProps): JSX.Element => {
   };
 
   return (
-    <div className="flex p-2 gap-2 bg-gray-200 w-fit align-middle rounded-md self-center">
+    <Paper
+      className="flex gap-2 w-fit align-middle self-center p-4"
+      elevation={4}
+    >
       {editing ? (
         <EditCategory id={id} />
       ) : (
         <>
-          <div className="whitespace-nowrap self-center">{name}</div>
+          <div className="whitespace-nowrap self-center">
+            {id} - {name}
+          </div>
           <IconButton onClick={handleEdit} size="small">
             <Edit />
           </IconButton>
         </>
       )}
-    </div>
+    </Paper>
   );
 };
 

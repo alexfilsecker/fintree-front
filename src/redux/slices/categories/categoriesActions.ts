@@ -21,3 +21,12 @@ export const patchCategory = generateRequest<unknown, PatchCategoryNamePayload>(
   "patch",
   "categories/:id"
 );
+
+type DeleteCategoryPayload = {
+  id: number;
+};
+
+export const deleteCategory = generateRequest<unknown, DeleteCategoryPayload>(
+  "delete",
+  "categories/:id"
+);

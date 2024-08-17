@@ -65,9 +65,8 @@ export const patch = async <A, RT>(
   });
 };
 
-export const wierdPatch = async <A, B, RT>(
+export const deleteRequest = async <A, RT>(
   path: string,
-  body: B,
   params: A,
   withToken = true
 ): Promise<AxiosResponse<RT, any>> => {
@@ -75,16 +74,11 @@ export const wierdPatch = async <A, B, RT>(
   if (withToken) {
     token = Cookies.get("token");
   }
-  const url = `${baseURL}/${path}/`;
-
-  return await axios<RT>({
-    method: "PATCH",
-    url,
-    data: body,
+  const url = `${baseURL}/${path}`;
+  return await axios.delete<RT>(url, {
     params,
     headers: {
       Authorization: withToken ? `Bearer ${token}` : undefined,
-      "Content-Type": "application/json",
     },
   });
 };

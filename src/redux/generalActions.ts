@@ -4,7 +4,7 @@ import Router from "next/router";
 
 import { getRefreshToken, getToken, isTokenExpired } from "../utils/auth";
 
-import { get, patch, post, requestNewToken } from "./api";
+import { deleteRequest, get, patch, post, requestNewToken } from "./api";
 import handleGeneralActionError from "./handleGeneralActionError";
 
 import type { KnownError } from "./knownError";
@@ -74,7 +74,7 @@ const fixPath = <A extends object>(
 };
 
 const generateRequest = <RT = unknown, A = void>(
-  method: "get" | "post" | "patch" | "put",
+  method: "get" | "post" | "patch" | "put" | "delete",
   path: string,
   options: Options = defaultOptions
 ): GeneralRequest<RT, A> => {
@@ -145,7 +145,22 @@ const generateRequest = <RT = unknown, A = void>(
             break;
           }
 
+          case "put": {
+            console.error("PUT method not implemented");
+            throw new Error("PUT method not implemented");
+          }
+
+          case "delete": {
+            response = await deleteRequest<A, AxiosReturnType<RT>>(
+              fixedPath,
+              fixedParams,
+              options.withToken
+            );
+            break;
+          }
+
           default:
+            console.error("Method not implemented");
             throw new Error("Method not implemented");
         }
       } catch (error: unknown) {
