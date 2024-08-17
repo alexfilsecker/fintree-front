@@ -14,14 +14,10 @@ export const requestCategories = generateRequest<CategoriesResponse>(
 type PatchCategoryNamePayload = {
   id: number;
   name: string;
+  parentId: number | null;
 };
 
-type PatchCategoryNameResponse = {
-  message: string;
-  id: number;
-};
-
-export const patchCategoryName = generateRequest<
-  PatchCategoryNameResponse,
-  PatchCategoryNamePayload
->("patch", "categories/:id/name");
+export const patchCategory = generateRequest<unknown, PatchCategoryNamePayload>(
+  "patch",
+  "categories/:id"
+);

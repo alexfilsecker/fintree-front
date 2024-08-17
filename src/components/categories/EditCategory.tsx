@@ -4,15 +4,17 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  type SelectChangeEvent,
   TextField,
 } from "@mui/material";
 import { useEffect } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/hooks/state";
-import { patchCategoryName } from "@/redux/slices/categories/categoriesActions";
+import { patchCategory } from "@/redux/slices/categories/categoriesActions";
 import {
   resetPatchingCategoryState,
   setCategoryEditingName,
+  setCategoryEditingParentCategoryId,
   setEditCategory,
 } from "@/redux/slices/categories/categoriesSlice";
 
@@ -24,7 +26,8 @@ const EditCategory = ({ id }: EditCategoryProps): JSX.Element => {
   const dispatch = useAppDispatch();
 
   const { categories } = useAppSelector((state) => state.categories);
-  const { editingName, patchingState, name } = categories[id];
+  const { editingName, editingParentCategoryId, patchingState, name } =
+    categories[id];
 
   const otherCategories = Object.values(categories).filter((category) => {
     return category.id !== id;
@@ -48,13 +51,40 @@ const EditCategory = ({ id }: EditCategoryProps): JSX.Element => {
     );
   };
 
+  const handleSelectChange = (e: SelectChangeEvent<number>): void => {
+    const value = e.target.value;
+    if (typeof value === "string") {
+      return;
+    }
+    dispatch(
+      setCategoryEditingParentCategoryId({
+        categoryId: id,
+        editingParentCategoryId: value,
+      })
+    );
+  };
+
   const handleCancelButton = (): void => {
     dispatch(setEditCategory({ categoryId: id, editing: false }));
     dispatch(setCategoryEditingName({ categoryId: id, editingName: name }));
+    dispatch(
+      setCategoryEditingParentCategoryId({
+        categoryId: id,
+        editingParentCategoryId: categories[id].parentCategoryId ?? 0,
+      })
+    );
   };
 
   const handleSaveButton = (): void => {
-    void dispatch(patchCategoryName({ id, name: editingName }));
+    const editParentId =
+      editingParentCategoryId === 0 ? null : editingParentCategoryId;
+    void dispatch(
+      patchCategory({
+        id,
+        name: editingName,
+        parentId: editParentId,
+      })
+    );
   };
 
   return (
@@ -70,7 +100,8 @@ const EditCategory = ({ id }: EditCategoryProps): JSX.Element => {
         <Select
           labelId="select-label"
           label="Parent Category"
-          value={categories[id].parentCategoryId ?? 0}
+          value={editingParentCategoryId}
+          onChange={handleSelectChange}
         >
           {otherCategories.map((category) => (
             <MenuItem key={category.id} value={category.id}>

@@ -8,7 +8,7 @@ import {
   type BasicState,
 } from "../basicState";
 
-import { patchCategoryName, requestCategories } from "./categoriesActions";
+import { patchCategory, requestCategories } from "./categoriesActions";
 
 import getIdFromUrl from "@/utils/getIdFromUrl";
 
@@ -21,6 +21,7 @@ export type CategoryApiResponse = {
 type Category = CategoryApiResponse & {
   editing: boolean;
   editingName: string;
+  editingParentCategoryId: number;
   patchingState: BasicState;
 };
 
@@ -50,6 +51,11 @@ type SetCategoryEditingNamePayload = {
   editingName: string;
 };
 
+type SetCategoryEditingParentCategoryId = {
+  categoryId: number;
+  editingParentCategoryId: number;
+};
+
 const hashCategoryEdits = (
   categories: Record<number, CategoryApiResponse & { editing: boolean }>
 ): string => {
@@ -62,6 +68,9 @@ const categoriesSlice = createSlice({
   name: "categories",
   initialState,
   reducers: {
+    resetPatchingCategoryState: (state, action: PayloadAction<number>) => {
+      state.categories[action.payload].patchingState = basicInitialState;
+    },
     setEditCategory: (state, action: PayloadAction<SetEditCategoryPayload>) => {
       const { categoryId, editing } = action.payload;
       state.categories[categoryId].editing = editing;
@@ -74,8 +83,13 @@ const categoriesSlice = createSlice({
       const { categoryId, editingName } = action.payload;
       state.categories[categoryId].editingName = editingName;
     },
-    resetPatchingCategoryState: (state, action: PayloadAction<number>) => {
-      state.categories[action.payload].patchingState = basicInitialState;
+    setCategoryEditingParentCategoryId: (
+      state,
+      action: PayloadAction<SetCategoryEditingParentCategoryId>
+    ) => {
+      const { categoryId, editingParentCategoryId } = action.payload;
+      state.categories[categoryId].editingParentCategoryId =
+        editingParentCategoryId;
     },
   },
   extraReducers: (builder) => {
@@ -92,26 +106,28 @@ const categoriesSlice = createSlice({
           ...category,
           editing: false,
           editingName: category.name,
+          editingParentCategoryId: category.parentCategoryId ?? 0,
           patchingState: basicInitialState,
         };
       });
       state.getCategoriesState = basicFulfilledState;
       state.categoriesEditHash = hashCategoryEdits(state.categories);
     });
-    builder.addCase(patchCategoryName.pending, (state, action) => {
+    builder.addCase(patchCategory.pending, (state, action) => {
       const movementId = getIdFromUrl(action.meta.url, 1);
       state.categories[movementId].patchingState = basicPendingState;
     });
-    builder.addCase(patchCategoryName.rejected, (state, action) => {
+    builder.addCase(patchCategory.rejected, (state, action) => {
       if (action.meta.url !== undefined) {
         const movementId = getIdFromUrl(action.meta.url, 1);
         state.categories[movementId].patchingState = basicRejectedState;
       }
     });
-    builder.addCase(patchCategoryName.fulfilled, (state, action) => {
+    builder.addCase(patchCategory.fulfilled, (state, action) => {
       const movementId = getIdFromUrl(action.meta.url, 1);
       state.categories[movementId].patchingState = basicFulfilledState;
       state.categories[movementId].name = action.meta.arg.name;
+      state.categories[movementId].parentCategoryId = action.meta.arg.parentId;
     });
   },
 });
@@ -120,6 +136,7 @@ export const {
   setEditCategory,
   setCategoryEditingName,
   resetPatchingCategoryState,
+  setCategoryEditingParentCategoryId,
 } = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;
