@@ -30,3 +30,13 @@ export const deleteCategory = generateRequest<unknown, DeleteCategoryPayload>(
   "delete",
   "categories/:id"
 );
+
+type CreateCategoryPayload = {
+  name: string;
+  parentId: number | null;
+};
+
+export const createCategory = generateRequest<unknown, CreateCategoryPayload>(
+  "put",
+  "categories"
+);

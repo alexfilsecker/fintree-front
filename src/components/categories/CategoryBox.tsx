@@ -29,9 +29,7 @@ const CategoryBox = ({ name, id }: CategoryBoxProps): JSX.Element => {
         <EditCategory id={id} />
       ) : (
         <>
-          <div className="whitespace-nowrap self-center">
-            {id} - {name}
-          </div>
+          <div className="whitespace-nowrap self-center">{name}</div>
           <IconButton onClick={handleEdit} size="small">
             <Edit />
           </IconButton>

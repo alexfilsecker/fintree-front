@@ -9,6 +9,7 @@ import {
 } from "../basicState";
 
 import {
+  createCategory,
   deleteCategory,
   patchCategory,
   requestCategories,
@@ -31,14 +32,28 @@ export type Category = CategoryApiResponse & {
   deletingState: BasicState;
 };
 
+type CategoryToCreate = Omit<
+  Category,
+  | "moreExpanded"
+  | "deletingState"
+  | "patchingState"
+  | "editing"
+  | "parentCategoryId"
+  | "name"
+> & {
+  putingState: BasicState;
+};
+
 type CategoriesState = {
   categories: Record<number, Category>;
+  categoryToCreate: CategoryToCreate | null;
   getCategoriesState: BasicState;
   categoriesEditHash: string;
 };
 
 const initialState: CategoriesState = {
   categories: {},
+  categoryToCreate: null,
   categoriesEditHash: "",
   getCategoriesState: basicInitialState,
 };
@@ -88,6 +103,16 @@ const categoriesSlice = createSlice({
       action: PayloadAction<SetCategoryEditingNamePayload>
     ) => {
       const { categoryId, editingName } = action.payload;
+      if (categoryId === -1) {
+        if (state.categoryToCreate === null) {
+          console.error(
+            "categoryToCreate is null in editing categoryToCreate name"
+          );
+          return;
+        }
+        state.categoryToCreate.editingName = editingName;
+        return;
+      }
       state.categories[categoryId].editingName = editingName;
     },
     setCategoryEditingParentCategoryId: (
@@ -95,6 +120,17 @@ const categoriesSlice = createSlice({
       action: PayloadAction<SetCategoryEditingParentCategoryId>
     ) => {
       const { categoryId, editingParentCategoryId } = action.payload;
+      if (categoryId === -1) {
+        if (state.categoryToCreate === null) {
+          console.error(
+            "categoryToCreate is null in editing categoryToCreate parent category"
+          );
+          return;
+        }
+        state.categoryToCreate.editingParentCategoryId =
+          editingParentCategoryId;
+        return;
+      }
       state.categories[categoryId].editingParentCategoryId =
         editingParentCategoryId;
     },
@@ -104,6 +140,17 @@ const categoriesSlice = createSlice({
     ) => {
       const { categoryId, moreExpanded } = action.payload;
       state.categories[categoryId].moreExpanded = moreExpanded;
+    },
+    beginCategoryCreation: (state) => {
+      state.categoryToCreate = {
+        id: -1,
+        editingName: "",
+        editingParentCategoryId: 0,
+        putingState: basicInitialState,
+      };
+    },
+    cancelCategoryCreation: (state) => {
+      state.categoryToCreate = null;
     },
   },
   extraReducers: (builder) => {
@@ -169,6 +216,27 @@ const categoriesSlice = createSlice({
         state.categories[child.id].parentCategoryId = grandParentId;
       });
     });
+    builder.addCase(createCategory.pending, (state) => {
+      if (state.categoryToCreate === null) {
+        console.error("categoryToCreate is null in createCategory pending");
+        return;
+      }
+      state.categoryToCreate.putingState = basicPendingState;
+    });
+    builder.addCase(createCategory.rejected, (state) => {
+      if (state.categoryToCreate === null) {
+        console.error("categoryToCreate is null in createCategory rejected");
+        return;
+      }
+      state.categoryToCreate.putingState = basicRejectedState;
+    });
+    builder.addCase(createCategory.fulfilled, (state) => {
+      if (state.categoryToCreate === null) {
+        console.error("categoryToCreate is null in createCategory fulfilled");
+        return;
+      }
+      state.categoryToCreate.putingState = basicFulfilledState;
+    });
   },
 });
 
@@ -178,6 +246,8 @@ export const {
   resetPatchingCategoryState,
   setCategoryEditingParentCategoryId,
   setMoreExpanded,
+  beginCategoryCreation,
+  cancelCategoryCreation,
 } = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;

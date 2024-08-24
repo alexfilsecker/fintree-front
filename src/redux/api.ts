@@ -83,6 +83,23 @@ export const deleteRequest = async <A, RT>(
   });
 };
 
+export const put = async <A, RT>(
+  path: string,
+  params: A,
+  withToken = true
+): Promise<AxiosResponse<RT, any>> => {
+  let token: string | undefined;
+  if (withToken) {
+    token = Cookies.get("token");
+  }
+  const url = `${baseURL}/${path}`;
+  return await axios.put<RT>(url, params, {
+    headers: {
+      Authorization: withToken ? `Bearer ${token}` : undefined,
+    },
+  });
+};
+
 type NewTokenPayload = {
   status: number;
   responseData: {

@@ -10,15 +10,35 @@ import { useAppDispatch, useAppSelector } from "@/hooks/state";
 import { setCategoryEditingParentCategoryId } from "@/redux/slices/categories/categoriesSlice";
 import { getNonDescendantCategories } from "@/utils/categories";
 
-type EditCategoryParentProps = {
+type EditCategoryPropsNew = {
+  new: true;
+};
+
+type EditCategoryPropsExisting = {
+  new: false;
   id: number;
 };
 
-const EditCategoryParent = ({ id }: EditCategoryParentProps): JSX.Element => {
-  const dispatch = useAppDispatch();
+type EditCategoryParentProps = EditCategoryPropsNew | EditCategoryPropsExisting;
 
-  const { categories } = useAppSelector((state) => state.categories);
-  const { editingParentCategoryId } = categories[id];
+const EditCategoryParent = (props: EditCategoryParentProps): JSX.Element => {
+  const dispatch = useAppDispatch();
+  const { categories, categoryToCreate } = useAppSelector(
+    (state) => state.categories
+  );
+
+  let editingParentCategoryId: number;
+  let id = -1;
+
+  if (props.new) {
+    if (categoryToCreate === null) {
+      return <div>ERROR</div>;
+    }
+    editingParentCategoryId = categoryToCreate.editingParentCategoryId;
+  } else {
+    id = props.id;
+    editingParentCategoryId = categories[id].editingParentCategoryId;
+  }
 
   const nonDescendantCategories = getNonDescendantCategories(categories, id);
 
@@ -44,12 +64,12 @@ const EditCategoryParent = ({ id }: EditCategoryParentProps): JSX.Element => {
         value={editingParentCategoryId}
         onChange={handleSelectChange}
       >
+        <MenuItem value={0}>None</MenuItem>
         {nonDescendantCategories.map((category) => (
           <MenuItem key={category.id} value={category.id}>
             {category.name}
           </MenuItem>
         ))}
-        <MenuItem value={0}>None</MenuItem>
       </Select>
     </FormControl>
   );

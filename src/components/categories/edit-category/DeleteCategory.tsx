@@ -20,7 +20,6 @@ const DeleteCategory = ({ id }: DeleteCategoryProps): JSX.Element => {
   };
 
   const handleDeleteButton = (): void => {
-    console.log("hooola");
     void dispatch(deleteCategory({ id }));
   };
 

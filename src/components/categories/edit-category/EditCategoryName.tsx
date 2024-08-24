@@ -3,15 +3,35 @@ import { TextField } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@/hooks/state";
 import { setCategoryEditingName } from "@/redux/slices/categories/categoriesSlice";
 
-type EditCategoryNameProps = {
+type EditCategoryPropsNew = {
+  new: true;
+};
+
+type EditCategoryPropsExisting = {
+  new: false;
   id: number;
 };
 
-const EditCategoryName = ({ id }: EditCategoryNameProps): JSX.Element => {
-  const { categories } = useAppSelector((state) => state.categories);
-  const { editingName } = categories[id];
+type EditCategoryNameProps = EditCategoryPropsNew | EditCategoryPropsExisting;
 
+const EditCategoryName = (props: EditCategoryNameProps): JSX.Element => {
   const dispatch = useAppDispatch();
+  const { categories, categoryToCreate } = useAppSelector(
+    (state) => state.categories
+  );
+
+  let editingName: string;
+  let id = -1;
+
+  if (props.new) {
+    if (categoryToCreate === null) {
+      return <div>ERROR</div>;
+    }
+    editingName = categoryToCreate.editingName;
+  } else {
+    id = props.id;
+    editingName = categories[id].editingName;
+  }
 
   const handleTextFieldChange = (
     e: React.ChangeEvent<HTMLInputElement>

@@ -47,7 +47,6 @@ const Tree = ({ name, treeChildren, refs, id }: TreeProps): JSX.Element => {
         childrenRefs={childrenRefs}
         childrenEditings={childrenEditings}
       />
-
       {treeChildren !== undefined && (
         <>
           <div className="flex gap-3 justify-center">
