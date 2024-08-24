@@ -34,7 +34,7 @@ const Tree = ({ name, treeChildren, refs, id }: TreeProps): JSX.Element => {
 
   return (
     <div
-      className="flex flex-col"
+      className="flex"
       ref={(el) => {
         if (el !== null) {
           refs.current.set(id, el);
@@ -49,7 +49,7 @@ const Tree = ({ name, treeChildren, refs, id }: TreeProps): JSX.Element => {
       />
       {treeChildren !== undefined && (
         <>
-          <div className="flex gap-3 justify-center">
+          <div className="flex flex-col gap-5 items-left justify-center">
             {treeChildren.map((child, index) => {
               return (
                 <Tree

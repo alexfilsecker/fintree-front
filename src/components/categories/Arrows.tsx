@@ -36,8 +36,9 @@ const Arrow = ({
   const width = arrowProps?.svgProps.containerWidth ?? 20;
   const height = arrowProps?.svgProps.containerHeight ?? 20;
 
+  console.log("🚀 - arrowProps:", arrowProps);
   return (
-    <svg height="30px" viewBox={`0 0 ${width} ${height}`} ref={arrowRef}>
+    <svg width="30px" viewBox={`0 0 ${width} ${height}`} ref={arrowRef}>
       {arrowProps?.arrows.map((arrowProps, index) => (
         <line
           key={index}

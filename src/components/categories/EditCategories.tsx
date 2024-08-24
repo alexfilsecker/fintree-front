@@ -40,7 +40,7 @@ const EditCategories = (): JSX.Element => {
       ) : (
         <NewCategory />
       )}
-      <div className="flex gap-3 justify-center overflow-auto">
+      <div className="flex flex-col gap-9 justify-center overflow-auto p-3">
         {tree.map((child, index) => {
           return (
             <Tree

@@ -66,7 +66,7 @@ const useArrows = ({
         top: parentRect.top - arrowRect.top,
         left: parentRect.left - arrowRect.left,
         right: parentRect.right - arrowRect.left,
-        bottom: parentRect.bottom - arrowRect.bottom,
+        bottom: parentRect.bottom - arrowRect.top,
         width: parentRect.width,
         height: parentRect.height,
       };
@@ -80,10 +80,10 @@ const useArrows = ({
       };
 
       return {
-        startX: relativeParentRect.left + relativeParentRect.width / 2,
-        startY: 0,
-        endX: relativeChildRect.left + relativeChildRect.width / 2,
-        endY: relativeChildRect.top,
+        startX: 0,
+        startY: relativeParentRect.top + relativeParentRect.height / 2,
+        endX: relativeChildRect.left,
+        endY: relativeChildRect.top + relativeChildRect.height / 2,
         containerWidth: arrowRect.width,
         containerHeight: arrowRect.height,
       };
