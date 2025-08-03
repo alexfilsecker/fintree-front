@@ -79,7 +79,7 @@ type SetCategoryMoreExpanded = {
 };
 
 const hashCategoryEdits = (
-  categories: Record<number, CategoryApiResponse & { editing: boolean }>
+  categories: Record<number, CategoryApiResponse & { editing: boolean }>,
 ): string => {
   return Object.values(categories)
     .map((category) => `${category.id}-${category.editing}`)
@@ -100,13 +100,13 @@ const categoriesSlice = createSlice({
     },
     setCategoryEditingName: (
       state,
-      action: PayloadAction<SetCategoryEditingNamePayload>
+      action: PayloadAction<SetCategoryEditingNamePayload>,
     ) => {
       const { categoryId, editingName } = action.payload;
       if (categoryId === -1) {
         if (state.categoryToCreate === null) {
           console.error(
-            "categoryToCreate is null in editing categoryToCreate name"
+            "categoryToCreate is null in editing categoryToCreate name",
           );
           return;
         }
@@ -117,13 +117,13 @@ const categoriesSlice = createSlice({
     },
     setCategoryEditingParentCategoryId: (
       state,
-      action: PayloadAction<SetCategoryEditingParentCategoryId>
+      action: PayloadAction<SetCategoryEditingParentCategoryId>,
     ) => {
       const { categoryId, editingParentCategoryId } = action.payload;
       if (categoryId === -1) {
         if (state.categoryToCreate === null) {
           console.error(
-            "categoryToCreate is null in editing categoryToCreate parent category"
+            "categoryToCreate is null in editing categoryToCreate parent category",
           );
           return;
         }
@@ -136,7 +136,7 @@ const categoriesSlice = createSlice({
     },
     setMoreExpanded: (
       state,
-      action: PayloadAction<SetCategoryMoreExpanded>
+      action: PayloadAction<SetCategoryMoreExpanded>,
     ) => {
       const { categoryId, moreExpanded } = action.payload;
       state.categories[categoryId].moreExpanded = moreExpanded;
@@ -210,7 +210,7 @@ const categoriesSlice = createSlice({
       delete state.categories[categoryId];
       state.categoriesEditHash = hashCategoryEdits(state.categories);
       const childs = Object.values(state.categories).filter(
-        (category) => category.parentCategoryId === categoryId
+        (category) => category.parentCategoryId === categoryId,
       );
       childs.forEach((child) => {
         state.categories[child.id].parentCategoryId = grandParentId;

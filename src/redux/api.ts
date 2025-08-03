@@ -9,7 +9,7 @@ export const post = async <A, RT>(
   path: string,
   body: A,
   withToken = true
-): Promise<AxiosResponse<RT, any>> => {
+): Promise<AxiosResponse<RT, unknown>> => {
   let token: string | undefined;
   if (withToken) {
     token = Cookies.get("token");
@@ -29,7 +29,7 @@ export const get = async <A, RT>(
   path: string,
   params: A,
   withToken = true
-): Promise<AxiosResponse<RT, any>> => {
+): Promise<AxiosResponse<RT, unknown>> => {
   let token: string | undefined;
   if (withToken) {
     token = Cookies.get("token");
@@ -47,7 +47,7 @@ export const patch = async <A, RT>(
   path: string,
   body: A,
   withToken = true
-): Promise<AxiosResponse<RT, any>> => {
+): Promise<AxiosResponse<RT, unknown>> => {
   let token: string | undefined;
   if (withToken) {
     token = Cookies.get("token");
@@ -69,7 +69,7 @@ export const deleteRequest = async <A, RT>(
   path: string,
   params: A,
   withToken = true
-): Promise<AxiosResponse<RT, any>> => {
+): Promise<AxiosResponse<RT, unknown>> => {
   let token: string | undefined;
   if (withToken) {
     token = Cookies.get("token");
@@ -87,7 +87,7 @@ export const put = async <A, RT>(
   path: string,
   params: A,
   withToken = true
-): Promise<AxiosResponse<RT, any>> => {
+): Promise<AxiosResponse<RT, unknown>> => {
   let token: string | undefined;
   if (withToken) {
     token = Cookies.get("token");

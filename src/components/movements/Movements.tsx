@@ -7,7 +7,7 @@ import MovementElement from "./MovementElement";
 import { useAppDispatch, useAppSelector } from "@/hooks/state";
 import { requestMovements } from "@/redux/slices/movement/movementActions";
 
-const Movements = (): JSX.Element => {
+const Movements = () => {
   const { movements } = useAppSelector((state) => state.movements);
 
   const dispatch = useAppDispatch();

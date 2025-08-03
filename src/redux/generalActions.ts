@@ -34,7 +34,7 @@ export type GeneralRequest<RT = unknown, A = void> = AsyncThunk<RT, A, Extras>;
 
 type fixPathReturnType<A> = {
   path: string;
-  params: A;
+  params: Partial<A>;
 };
 
 const fixPath = <A extends object>(
@@ -45,18 +45,19 @@ const fixPath = <A extends object>(
     throw new Error("Params is not an object or is null");
   }
 
-  const returnParams = { ...params };
-
   const keysToFind = path.match(/:[a-zA-Z0-9]*/g);
   if (keysToFind === null) {
     return { path, params };
   }
+
+  const assertedKeys: (keyof A)[] = [];
   keysToFind.forEach((key) => {
     const keyWithoutColon = key.slice(1);
     if (!(keyWithoutColon in params)) {
       throw new Error(`Key ${keyWithoutColon} not found in params`);
     }
     const asertedKey = keyWithoutColon as keyof A;
+    assertedKeys.push(asertedKey);
     const value = params[asertedKey];
     if (typeof value === "number") {
       path = path.replace(key, value.toString());
@@ -67,7 +68,14 @@ const fixPath = <A extends object>(
         `Value of key ${keyWithoutColon} is not a number or a string`
       );
     }
-    returnParams[asertedKey] = undefined as any;
+  });
+
+  // Make a copy of params without the assertedKeys
+  const returnParams: Partial<A> = {};
+  Object.keys(params).forEach((key) => {
+    if (!assertedKeys.includes(key as keyof A)) {
+      returnParams[key as keyof A] = params[key as keyof A];
+    }
   });
 
   return { path, params: returnParams };
@@ -84,7 +92,7 @@ const generateRequest = <RT = unknown, A = void>(
     typePrefix,
     async (params: A, thunkApi) => {
       let fixedPath = path;
-      let fixedParams = params;
+      let fixedParams: A | Partial<A> = params;
       if (typeof params === "object" && params !== null) {
         const fix = fixPath(path, params);
         fixedPath = fix.path;
@@ -115,11 +123,13 @@ const generateRequest = <RT = unknown, A = void>(
         }
       }
 
+      type AorPartialA = A | Partial<A>;
+
       let response;
       try {
         switch (method) {
           case "post": {
-            response = await post<A, AxiosReturnType<RT>>(
+            response = await post<AorPartialA, AxiosReturnType<RT>>(
               fixedPath,
               fixedParams,
               options.withToken
@@ -128,7 +138,7 @@ const generateRequest = <RT = unknown, A = void>(
           }
 
           case "get": {
-            response = await get<A, AxiosReturnType<RT>>(
+            response = await get<AorPartialA, AxiosReturnType<RT>>(
               fixedPath,
               fixedParams,
               options.withToken
@@ -137,7 +147,7 @@ const generateRequest = <RT = unknown, A = void>(
           }
 
           case "patch": {
-            response = await patch<A, AxiosReturnType<RT>>(
+            response = await patch<AorPartialA, AxiosReturnType<RT>>(
               fixedPath,
               fixedParams,
               options.withToken
@@ -146,7 +156,7 @@ const generateRequest = <RT = unknown, A = void>(
           }
 
           case "put": {
-            response = await put<A, AxiosReturnType<RT>>(
+            response = await put<AorPartialA, AxiosReturnType<RT>>(
               fixedPath,
               fixedParams,
               options.withToken
@@ -155,7 +165,7 @@ const generateRequest = <RT = unknown, A = void>(
           }
 
           case "delete": {
-            response = await deleteRequest<A, AxiosReturnType<RT>>(
+            response = await deleteRequest<AorPartialA, AxiosReturnType<RT>>(
               fixedPath,
               fixedParams,
               options.withToken

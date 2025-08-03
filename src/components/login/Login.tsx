@@ -12,7 +12,7 @@ import PasswordInput from "./Password";
 import { useAppDispatch, useAppSelector } from "@/hooks/state";
 import login from "@/redux/slices/auth/authActions";
 
-const Login = (): JSX.Element => {
+const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 

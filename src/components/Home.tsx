@@ -10,7 +10,7 @@ import {
 } from "@/redux/slices/movement/movementActions";
 import { resetScrap } from "@/redux/slices/movement/movementSlice";
 
-const Home = (): JSX.Element => {
+const Home = () => {
   const { loadingMovements, loadingScrap, successScrap } = useAppSelector(
     (state) => state.movements
   );

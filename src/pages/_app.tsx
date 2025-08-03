@@ -8,7 +8,7 @@ import Layout from "@/components/Layout";
 import theme from "@/style/theme";
 import "../style/global.css";
 
-const MyApp = ({ Component, pageProps }: AppProps): JSX.Element => {
+const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>

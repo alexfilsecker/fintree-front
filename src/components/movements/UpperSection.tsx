@@ -15,7 +15,7 @@ const UpperMovementSection = ({
   noUserDescription,
   setEditing,
   editing,
-}: UpperMovementSectionProps): JSX.Element => {
+}: UpperMovementSectionProps) => {
   return (
     <div className="flex items-center">
       <Typography className="self-center grow">{institution}</Typography>

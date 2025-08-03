@@ -9,7 +9,7 @@ type DateSectionProps = {
   editingDescription: boolean;
 };
 
-const Wraper = ({ children }: { children: React.ReactNode }): JSX.Element => (
+const Wraper = ({ children }: { children: React.ReactNode }) => (
   <div className="flex flex-col w-1/5 gap-1 whitespace-nowrap">{children}</div>
 );
 
@@ -17,7 +17,7 @@ const DateSeciton = ({
   date,
   valueDate,
   editingDescription,
-}: DateSectionProps): JSX.Element => {
+}: DateSectionProps) => {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {

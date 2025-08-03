@@ -15,7 +15,7 @@ type MovementElementProps = {
   movement: MovementWithStates;
 };
 
-const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
+const MovementElement = ({ movement }: MovementElementProps) => {
   const {
     institution,
     amount,
@@ -73,7 +73,9 @@ const MovementElement = ({ movement }: MovementElementProps): JSX.Element => {
         />
         <div className="w-1/5 flex justify-center self-center">
           <Typography
-            className={`${amount > 0 ? "bg-green-200" : "bg-red-200"} p-1 rounded-md`}
+            className={`${
+              amount > 0 ? "bg-green-200" : "bg-red-200"
+            } p-1 rounded-md`}
           >
             {sign} ${absouluteAmount} {currency}
           </Typography>

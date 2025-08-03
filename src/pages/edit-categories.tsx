@@ -1,7 +1,11 @@
-import EditCategories from "@/components/categories/EditCategories";
+// import EditCategories from "@/components/categories/EditCategories";
 
-const EditCategoriesPage = (): JSX.Element => {
-  return <EditCategories />;
-};
+// const EditCategoriesPage = () => {
+//   return <EditCategories />;
+// };
 
-export default EditCategoriesPage;
+// export default EditCategoriesPage;
+
+export default function () {
+  return <div>Page not found</div>;
+}

@@ -8,7 +8,7 @@ type CategoriesResponse = {
 
 export const requestCategories = generateRequest<CategoriesResponse>(
   "get",
-  "categories"
+  "categories",
 );
 
 type PatchCategoryNamePayload = {
@@ -19,7 +19,7 @@ type PatchCategoryNamePayload = {
 
 export const patchCategory = generateRequest<unknown, PatchCategoryNamePayload>(
   "patch",
-  "categories/:id"
+  "categories/:id",
 );
 
 type DeleteCategoryPayload = {
@@ -28,7 +28,7 @@ type DeleteCategoryPayload = {
 
 export const deleteCategory = generateRequest<unknown, DeleteCategoryPayload>(
   "delete",
-  "categories/:id"
+  "categories/:id",
 );
 
 type CreateCategoryPayload = {
@@ -38,5 +38,5 @@ type CreateCategoryPayload = {
 
 export const createCategory = generateRequest<unknown, CreateCategoryPayload>(
   "put",
-  "categories"
+  "categories",
 );

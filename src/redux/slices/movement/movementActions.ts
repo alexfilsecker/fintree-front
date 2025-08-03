@@ -10,7 +10,7 @@ type MovementsResponse = {
 
 export const requestMovements = generateRequest<MovementsResponse>(
   "get",
-  "movements"
+  "movements",
 );
 
 type PatchUserDescriptionPayload = {

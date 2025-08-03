@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { useAppDispatch } from "@/hooks/state";
 import { patchUserDescription } from "@/redux/slices/movement/movementActions";
-import { type BasicState } from "@/redux/slices/movement/movementSlice";
+import { type BasicState } from "@/redux/slices/basicState";
 
 type DescriptionSectionProps = {
   movementId: number;
@@ -15,7 +15,7 @@ type DescriptionSectionProps = {
   setEditing: (editing: boolean) => void;
 };
 
-const Wraper = ({ children }: { children: React.ReactNode }): JSX.Element => (
+const Wraper = ({ children }: { children: React.ReactNode }) => (
   <div className="flex flex-col w-1/2 gap-1">{children}</div>
 );
 
@@ -26,7 +26,7 @@ const DescriptionSection = ({
   userDescriptionState,
   editing,
   setEditing,
-}: DescriptionSectionProps): JSX.Element => {
+}: DescriptionSectionProps) => {
   const [expanded, setExpanded] = useState(false);
   const [newUserDescription, setNewUserDescription] = useState(
     userDescription ?? ""

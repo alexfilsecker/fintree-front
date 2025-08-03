@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Login from "@/components/login/Login";
 import { useAppSelector } from "@/hooks/state";
 
-const Index = (): JSX.Element => {
+const Index = () => {
   const { userInfo } = useAppSelector((state) => state.auth);
 
   const router = useRouter();

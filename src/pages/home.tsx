@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Home from "@/components/Home";
 import { useAppSelector } from "@/hooks/state";
 
-const HomePage = (): JSX.Element => {
+const HomePage = () => {
   const { userInfo } = useAppSelector((state) => state.auth);
 
   const router = useRouter();

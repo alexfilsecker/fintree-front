@@ -19,7 +19,7 @@ const PasswordInput = ({
   password,
   setPassword,
   error,
-}: PasswordInputProps): JSX.Element => {
+}: PasswordInputProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = (): void => {
